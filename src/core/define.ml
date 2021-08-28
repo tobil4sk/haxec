@@ -46,11 +46,8 @@ let raw_defined_value ctx k =
 	PMap.find k ctx.values
 
 let defined_value ctx v =
-	let main_key,secondary_key = fst (infos v) in
-	try
-		raw_defined_value ctx main_key
-	with Not_found when main_key <> secondary_key ->
-		raw_defined_value ctx secondary_key
+	let underscore_key = snd (fst (infos v)) in
+	raw_defined_value ctx underscore_key
 
 let defined_value_safe ?default ctx v =
 	try defined_value ctx v
