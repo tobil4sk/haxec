@@ -88,8 +88,8 @@ let s_version =
 
 let s_version_full =
 	match Version.version_extra with
-        | Some (_,build) -> s_version ^ "+" ^ build
-        | _ -> s_version
+		| Some (_,build) -> s_version ^ "+" ^ build
+		| _ -> s_version
 
 (**
 	Terminates compiler process and prints user-friendly instructions about filing an issue.
