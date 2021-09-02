@@ -1,0 +1,3 @@
+# with dash
+-D variable-a
+--run Dash
