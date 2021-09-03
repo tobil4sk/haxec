@@ -22,6 +22,7 @@ class Macro {
 		runCommand("haxe", ["test-js-es6.hxml"]);
 
 		changeDirectory(miscDir);
+		haxelibInstallGit("HaxeFoundation", "hashlink", "master", "other/haxelib/");
 		runCommand("haxe", ["compile.hxml"]);
 
 		changeDirectory(miscDir + "resolution");

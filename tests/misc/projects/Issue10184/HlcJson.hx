@@ -14,24 +14,15 @@ function deleteDirectory(path:String) {
 }
 
 function main() {
-	new sys.io.Process("haxelib", ["newrepo"]);
-	new sys.io.Process("haxelib", [
-		"install",
-		"hashlink"
-	]
-	);
-
 	Tools.runHaxe(["Tools", "--hl", "out/main.c"]);
 
 	final json = Json.parse(File.getContent("out/hlc.json"));
 
 	final defines:DynamicAccess<String> = json.defines;
 
-	for (define in defines.keys()){
+	for (define in defines.keys())
 		if (StringTools.contains(define, "-"))
 			Tools.error("Generated `hlc.json` contains raw version of define flag: " + define);
-	}
 
-	new sys.io.Process("haxelib", ["deleterepo"]);
 	deleteDirectory("out");
 }
