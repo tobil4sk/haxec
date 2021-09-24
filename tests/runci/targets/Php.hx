@@ -8,6 +8,23 @@ class Php {
 	static var miscPhpDir(get,never):String;
 	static inline function get_miscPhpDir() return miscDir + 'php/';
 
+	static function modifyIniWindows() {
+		final configPath = {
+			final output = new sys.io.Process("php --ini | findstr 'Loaded Configuration File:'").stdout.readAll();
+			Sys.command('echo $output');
+			StringTools.trim(output.toString().split(":")[1]);
+		}
+		Sys.command('echo $configPath');
+		Sys.println(configPath);
+		var content = sys.io.File.getContent(configPath);
+
+		final toUncomment = ["extension=php_pdo.dll", "extension=php_sqlite.dll", "extension=php_sockets.dll"];
+		for (ext in toUncomment)
+			content = StringTools.replace(content, ';$ext', ext);
+
+		sys.io.File.saveContent(configPath, content);
+	}
+
 	static public function getPhpDependencies() {
 		var phpCmd = commandResult("php", ["-v"]);
 		var phpVerReg = ~/PHP ([0-9]+\.[0-9]+)/i;
@@ -23,6 +40,8 @@ class Php {
 					if(phpInfo.stdout.indexOf("mbstring => enabled") < 0) {
 						Linux.requireAptPackages(["php-mbstring"]);
 					}
+				case "Windows":
+					modifyIniWindows();
 				case _:
 			}
 			infoMsg('php $phpVer has already been installed.');
@@ -35,6 +54,7 @@ class Php {
 				runCommand("brew", ["install", "php"], true);
 			case "Windows":
 				runCommand("cinst", ["php", "-version", "7.1.8", "-y"], true);
+				modifyIniWindows();
 			case _:
 				throw 'unknown system: $systemName';
 		}
