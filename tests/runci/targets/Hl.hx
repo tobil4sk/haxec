@@ -78,6 +78,6 @@ class Hl {
 
         changeDirectory(sysDir);
         runCommand("haxe", ["compile-hl.hxml"].concat(args));
-        runCommand(hlBinary, ["bin/hl/sys.hl"]);
+        runCommand(setSysVar + hlBinary + " bin/hl/sys.hl");
     }
 }

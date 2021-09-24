@@ -68,7 +68,7 @@ class Python {
 		changeDirectory(sysDir);
 		runCommand("haxe", ["compile-python.hxml"].concat(args));
 		for (py in pys) {
-			runCommand(py, ["bin/python/sys.py"]);
+			runCommand(setSysVar + py + " bin/python/sys.py");
 		}
 
 		changeDirectory(miscPythonDir);

@@ -163,4 +163,11 @@ class System {
 		Sys.println('Changing directory to $path');
 		Sys.setCwd(path);
 	}
+
+	/* command for setting the environment variable to set before sys tests */
+	public static final setSysVar =
+		if (Sys.systemName() == "Windows")
+			"set EXISTS=1 && ";
+		else
+			"export EXISTS=1 && ";
 }
