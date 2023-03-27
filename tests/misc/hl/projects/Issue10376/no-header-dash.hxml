@@ -1,5 +1,8 @@
 --main CheckSourceHeader
---hl out/main.c
+--hl bin/main.c
 -D no-compilation
 -D source-header=
---cmd haxe --run CheckSourceHeader ""
+
+--next
+--run CheckSourceHeader
+--empty

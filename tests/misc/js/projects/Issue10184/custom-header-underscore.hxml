@@ -1,4 +1,7 @@
 --main Main
---js main.js
+--js bin/main.js
 -D source_header=custom
---cmd haxe --run CheckSourceHeader custom
+
+--next
+--run CheckSourceHeader
+custom

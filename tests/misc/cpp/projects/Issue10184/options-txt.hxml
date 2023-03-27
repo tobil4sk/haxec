@@ -1,5 +1,7 @@
 # test Options.txt defines
 --main CheckOptionsTxt
---cpp out
+--cpp bin
 -D no-compilation
---cmd haxe --run CheckOptionsTxt
+
+--next
+--run CheckOptionsTxt
