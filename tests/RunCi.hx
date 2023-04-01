@@ -37,7 +37,10 @@ class RunCi {
 			infoMsg('test $test');
 			try {
 				changeDirectory(unitDir);
-				haxelibInstallGit("haxe-utest", "utest", "424a7182a93057730fada54b9d27d90b3cb7065c", "--always");
+				while (true) {
+					haxelibInstallGit("haxe-utest", "utest", "424a7182a93057730fada54b9d27d90b3cb7065c", "--always");
+					runCommand("haxelib", ["remove", "utest"]);
+				}
 
 				var args = switch (ci) {
 					case null:
