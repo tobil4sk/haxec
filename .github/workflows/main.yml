@@ -411,7 +411,6 @@ jobs:
           set -ex
           mkdir ~/haxelib
           haxelib setup ~/haxelib
-          ldd $(where haxelib)
 
       - name: Install apt packages
         if: matrix.APT_PACKAGES
