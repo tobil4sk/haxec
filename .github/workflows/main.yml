@@ -427,13 +427,13 @@ jobs:
         run: |
           ulimit -c unlimited
           haxe RunCi.hxml
-          sudo chmod -R +rwx /cores/*
+          sudo chmod -R +rwx /var/cores/*
         working-directory: ${{github.workspace}}/tests
 
       - uses: actions/upload-artifact@master # capture all crashes as build artifacts
         with:
           name: crashes
-          path: /cores
+          path: /var/cores
 
   test-docgen:
     needs: linux-build
