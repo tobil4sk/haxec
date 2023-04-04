@@ -19,6 +19,11 @@ class RunCi {
 				[for (v in env.split(",")) v.trim().toLowerCase()];
 		}
 
+		runCommand("haxe", ["--neko", "main.n", "--main", "NekoThreadTest"]);
+		while (true) {
+			runCommand("neko", ["main.n"]);
+		}
+
 		infoMsg('Going to test: $tests');
 
 		if (isCi()) {
