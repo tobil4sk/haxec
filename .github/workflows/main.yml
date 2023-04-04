@@ -252,6 +252,13 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Test
+        run: |
+          sudo ls /var/
+          sudo ls /var/cores/
+          sudo ls /var/lib/apport/coredump/
+        working-directory: ${{github.workspace}}/tests
+
       - name: Cache opam
         id: cache-opam
         uses: actions/cache@v3.0.11
