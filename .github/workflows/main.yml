@@ -254,8 +254,8 @@ jobs:
 
       - name: Test
         run: |
-          sudo ls /var/
-          sudo ls /var/cores/
+          # sudo ls /var/
+          # sudo ls /var/cores/
           sudo ls /var/lib/apport/coredump/
         working-directory: ${{github.workspace}}/tests
 
@@ -433,6 +433,10 @@ jobs:
       - name: Test
         run: |
           ulimit -c unlimited
+          mkdir -p ~/.config/apport
+          printf '[main]
+          unpackaged=true
+          ' >> ~/.config/apport/settings
           haxe RunCi.hxml
           sudo chmod -R +rwx /var/cores/*
         working-directory: ${{github.workspace}}/tests
