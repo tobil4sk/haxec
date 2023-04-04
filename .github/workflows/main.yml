@@ -311,8 +311,20 @@ jobs:
         run: export DISPLAY=:99.0
 
       - name: Test
-        run: haxe RunCi.hxml
+        run: |
+          ulimit -c unlimited
+          mkdir -p ~/.config/apport
+          printf '[main]
+          unpackaged=true
+          ' >> ~/.config/apport/settings
+          haxe RunCi.hxml
+          sudo chmod -R +rwx /var/lib/apport/coredump/*
         working-directory: ${{github.workspace}}/tests
+
+      - uses: actions/upload-artifact@master # capture all crashes as build artifacts
+        with:
+          name: crashes
+          path: /var/lib/apport/coredump/*
 
   test-docgen:
     needs: linux-build

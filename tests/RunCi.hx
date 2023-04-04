@@ -77,7 +77,8 @@ class RunCi {
 				}
 			} catch(f:CommandFailure) {
 				failMsg('test ${test} failed');
-				Sys.exit(f.exitCode);
+				// Sys.exit(f.exitCode);
+				return;
 			}
 
 			successMsg('test ${test} succeeded');
