@@ -73,8 +73,8 @@ jobs:
         shell: pwsh
         run: |
           Set-PSDebug -Trace 1
-          opam depext haxe
-          opam install . --deps-only
+          opam pin add haxe . --kind=path --no-action
+          opam install haxe --deps-only
           opam list
           ocamlopt -v
 
