@@ -23,17 +23,17 @@ jobs:
       #     echo "C:\msys64\usr\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       #     rm C:\msys64\usr\bin\bash.exe
 
-      # - name: Install Neko from S3
-      #   shell: pwsh
-      #   run: |
-      #     Invoke-WebRequest https://build.haxe.org/builds/neko/$env:PLATFORM/neko_latest.zip -OutFile $env:RUNNER_TEMP/neko_latest.zip
-      #     Expand-Archive $env:RUNNER_TEMP/neko_latest.zip -DestinationPath $env:RUNNER_TEMP
-      #     $NEKOPATH = Get-ChildItem $env:RUNNER_TEMP/neko-*-*
-      #     echo "$NEKOPATH" >> $env:GITHUB_PATH
-      #     echo "NEKOPATH=$NEKOPATH" >> $env:GITHUB_ENV
+      - name: Install Neko from S3
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://build.haxe.org/builds/neko/$env:PLATFORM/neko_latest.zip -OutFile $env:RUNNER_TEMP/neko_latest.zip
+          Expand-Archive $env:RUNNER_TEMP/neko_latest.zip -DestinationPath $env:RUNNER_TEMP
+          $NEKOPATH = Get-ChildItem $env:RUNNER_TEMP/neko-*-*
+          echo "$NEKOPATH" >> $env:GITHUB_PATH
+          echo "NEKOPATH=$NEKOPATH" >> $env:GITHUB_ENV
 
-      # - name: Print Neko version
-      #   run: neko -version 2>&1
+      - name: Print Neko version
+        run: neko -version 2>&1
 
       # - name: choco install nsis
       #   uses: nick-invision/retry@v1
