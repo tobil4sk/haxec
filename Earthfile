@@ -146,7 +146,7 @@ INSTALL_NEKO:
     ARG PREFIX=/usr/local
     RUN bash -c "ln -s \"$NEKOPATH\"/{neko,nekoc,nekoml,nekotools} \"$PREFIX/bin/\""
     RUN bash -c "ln -s \"$NEKOPATH\"/libneko.* \"$PREFIX/lib/\""
-    RUN ls "$NEKOPATH/include/"
+    RUN ls "$NEKOPATH"
     RUN bash -c "ln -s \"$NEKOPATH\"/include/* \"$PREFIX/include/\""
     RUN ls "$PREFIX/include/"
     RUN mkdir -p "$PREFIX/lib/neko/"
