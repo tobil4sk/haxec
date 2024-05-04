@@ -58,7 +58,7 @@ haxelib_win:
 	ls $(CURDIR)
 	ls $(CURDIR)/std
 	cd $(CURDIR)/extra/haxelib_src && \
-	HAXE_STD_PATH=$(CURDIR)/std $(CURDIR)/$(HAXE_OUTPUT) client.hxml && \
+	$(CURDIR)/$(HAXE_OUTPUT) client.hxml && \
 	nekotools boot run.n
 	mv extra/haxelib_src/run$(EXTENSION) $(HAXELIB_OUTPUT)
 
