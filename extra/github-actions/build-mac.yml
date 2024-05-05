@@ -54,6 +54,8 @@
     ls -l out
     otool -L ./haxe
     otool -L ./haxelib
+    otool -l ./haxelib
+    nm -u ./haxelib
   env:
     SET_ARCH: ${{ runner.arch == 'ARM64' && 'arch -x86_64' || ' ' }}
 
