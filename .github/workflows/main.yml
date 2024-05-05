@@ -159,6 +159,7 @@ jobs:
           sudo ln -s $NEKOPATH/*.ndll                         /usr/local/lib/neko/
           otool -L /usr/local/bin/neko
           otool -l /usr/local/bin/neko
+          nm -u /usr/local/bin/neko
           echo "NEKOPATH=$NEKOPATH" >> $GITHUB_ENV
 
       - name: Print Neko version
@@ -278,6 +279,7 @@ jobs:
           sudo ln -s $NEKOPATH/*.ndll                         /usr/local/lib/neko/
           otool -L /usr/local/bin/neko
           otool -l /usr/local/bin/neko
+          nm -u /usr/local/bin/neko
           echo "NEKOPATH=$NEKOPATH" >> $GITHUB_ENV
 
       - name: Print Neko version
@@ -358,6 +360,7 @@ jobs:
           sudo ln -s $NEKOPATH/*.ndll                         /usr/local/lib/neko/
           otool -L /usr/local/bin/neko
           otool -l /usr/local/bin/neko
+          nm -u /usr/local/bin/neko
           echo "NEKOPATH=$NEKOPATH" >> $GITHUB_ENV
 
       - name: Print Neko version
@@ -498,6 +501,7 @@ jobs:
           sudo ln -s $NEKOPATH/*.ndll                         /usr/local/lib/neko/
           otool -L /usr/local/bin/neko
           otool -l /usr/local/bin/neko
+          nm -u /usr/local/bin/neko
           echo "NEKOPATH=$NEKOPATH" >> $GITHUB_ENV
 
       - name: Print Neko version
@@ -749,6 +753,7 @@ jobs:
           sudo ln -s $NEKOPATH/*.ndll                         /usr/local/lib/neko/
           otool -L /usr/local/bin/neko
           otool -l /usr/local/bin/neko
+          nm -u /usr/local/bin/neko
           echo "NEKOPATH=$NEKOPATH" >> $GITHUB_ENV
 
       - name: Print Neko version
