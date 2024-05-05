@@ -18,7 +18,7 @@
   run: |
     set -ex
     mkdir ~/haxelib
-    haxelib setup ~/haxelib
+    DYLD_PRINT_SEARCHING=1 haxelib setup ~/haxelib
 
 - name: Install homebrew packages
   if: matrix.BREW_PACKAGES
