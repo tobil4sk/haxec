@@ -105,7 +105,7 @@ copy_haxetoolkit: /cygdrive/c/HaxeToolkit/haxe/haxe.exe
 endif
 
 ifeq ($(SYSTEM_NAME),Mac)
-HAXELIB_LFLAGS= -Wl,-rpath,$(INSTALL_DIR)/lib
+# HAXELIB_LFLAGS= -Wl,-rpath,$(INSTALL_DIR)/lib
 endif
 
 haxelib_unix:
