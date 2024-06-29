@@ -62,6 +62,10 @@ function main() {
 
 	trace(neko.vm.Loader.local().getPath());
 	final ndllPath = neko.vm.Loader.local().getPath()[0];
+
+	final arch = neko.Lib.nekoToHaxe(neko.Lib.load("std", "sys_cpu_arch", 0)());
+	trace(arch);
+
 	if (ndllPath.endsWith(expectedNdllSubDir)) {
 		Sys.println("Success");
 	} else {
