@@ -22,7 +22,9 @@ class Lua {
 					runNetworkCommand("brew", ["install", "python3"]);
 
 				attemptCommand("brew", ["install", "pcre2"]);
-				runCommand("pip3", ["install", "hererocks"]);
+				runCommand("pip3", ["install", "--user", "hererocks"]);
+				final pyUserBase = commandResult("python", ["-m", "site", "--user-base"]).stdout.trim();
+				addToPATH(Path.join([pyUserBase, "bin"]));
 				runCommand("brew", ["install", "openssl"]);
 			}
 		}

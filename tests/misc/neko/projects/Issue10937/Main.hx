@@ -60,8 +60,8 @@ function main() {
 
 	final expectedNdllSubDir = Sys.systemName() + arch.getNdllSuffix() + "/";
 
+	trace(neko.vm.Loader.local().getPath());
 	final ndllPath = neko.vm.Loader.local().getPath()[0];
-
 	if (ndllPath.endsWith(expectedNdllSubDir)) {
 		Sys.println("Success");
 	} else {

@@ -710,6 +710,9 @@ jobs:
         include:
           - target: hl
             BREW_PACKAGES: ninja
+        exclude:
+          - os: macos-14
+            target: hl
     steps:
       - uses: actions/checkout@main
         with:
