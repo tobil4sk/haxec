@@ -120,7 +120,7 @@ HAXELIB_INTERP=HAXE_STD_PATH=$(CURDIR)/std $(CURDIR)/$(HAXE_OUTPUT) \
 # haxelib should depends on haxe, but we don't want to do that...
 # since haxelib isn't available in PATH yet, we have to pass -D no-compilation and build manually
 haxelib: $(HAXELIB_SRC_PATH)/haxelib_hxb.zip
-	$(HAXELIB_INTERP) config > /dev/null || $(HAXELIB_INTERP) setup ~/.local/share/haxe/lib
+	$(HAXELIB_INTERP) config > /dev/null || $(HAXELIB_INTERP) newrepo
 	$(HAXELIB_INTERP) path hxcpp > /dev/null || $(HAXELIB_INTERP) install hxcpp
 	HAXE_STD_PATH=$(CURDIR)/std $(CURDIR)/$(HAXE_OUTPUT) --cwd $(HAXELIB_SRC_PATH) \
 		client_cpp.hxml -D destination=$(CURDIR)/$(HAXELIB_OUTPUT) -D no-compilation
