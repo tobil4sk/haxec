@@ -7048,12 +7048,18 @@ let write_build_options common_ctx filename defines =
    let writer = cached_source_writer common_ctx filename in
    let write_define name value = writer#write (Printf.sprintf "%s=%s\n" name value) in
    PMap.iter ( fun name value -> match name with
-      | "true" | "sys" | "dce" | "cpp" | "debug" -> ()
+      | "true" | "sys" | "dce" | "cpp" | "debug" | "hxcpp.path" -> ()
       | _ ->  write_define name (escape_command value)) defines;
-   let pin,pid = Process_helper.open_process_args_in_pid "haxelib" [|"haxelib"; "path"; "hxcpp"|] in
-   set_binary_mode_in pin false;
-   write_define "hxcpp" (Stdlib.input_line pin);
-   Stdlib.ignore (Process_helper.close_process_in_pid (pin,pid));
+   let hxcpp_path = try PMap.find "hxcpp.path" defines
+   with Not_found -> begin
+      let pin,pid = Process_helper.open_process_args_in_pid "haxelib" [|"haxelib"; "path"; "hxcpp"|] in
+      set_binary_mode_in pin false;
+      let output = Stdlib.input_line pin in
+      Stdlib.ignore (Process_helper.close_process_in_pid (pin,pid));
+      output
+   end
+   in
+   write_define "hxcpp" (hxcpp_path);
    writer#close;;
 
 let create_member_types common_ctx =
@@ -8683,7 +8689,7 @@ let generate_source ctx =
       let cmd = ref ["run"; "hxcpp"; "Build.xml"; "haxe"] in
 	  if (common_ctx.debug) then cmd := !cmd @ ["-Ddebug"];
       PMap.iter ( fun name value -> match name with
-         | "true" | "sys" | "dce" | "cpp" | "debug" -> ();
+         | "true" | "sys" | "dce" | "cpp" | "debug" | "hxcpp.path" -> ();
          | _ -> cmd := !cmd @ [Printf.sprintf "-D%s=\"%s\"" name (escape_command value)];
       ) common_ctx.defines.values;
       common_ctx.class_paths#iter (fun path ->

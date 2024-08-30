@@ -122,8 +122,9 @@ HAXELIB_INTERP=HAXE_STD_PATH=$(CURDIR)/std $(CURDIR)/$(HAXE_OUTPUT) \
 haxelib: $(HAXELIB_SRC_PATH)/haxelib_hxb.zip
 	$(HAXELIB_INTERP) config > /dev/null || $(HAXELIB_INTERP) newrepo
 	$(HAXELIB_INTERP) path hxcpp > /dev/null || $(HAXELIB_INTERP) install hxcpp --quiet
+	hxcpp_path=`$(HAXELIB_INTERP) libpath hxcpp` \
 	HAXE_STD_PATH=$(CURDIR)/std $(CURDIR)/$(HAXE_OUTPUT) --cwd $(HAXELIB_SRC_PATH) \
-		client_cpp.hxml -D destination=$(CURDIR)/$(HAXELIB_OUTPUT) -D no-compilation
+		client_cpp.hxml -D destination=$(CURDIR)/$(HAXELIB_OUTPUT) -D no-compilation -D hxcpp.path=$$hxcpp_path
 	cd $(HAXELIB_SRC_PATH)/bin/cpp && $(HAXELIB_INTERP) run hxcpp Build.xml haxe
 
 tools: haxelib
