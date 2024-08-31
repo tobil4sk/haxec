@@ -106,9 +106,6 @@ endif
 
 HAXELIB_SRC_PATH=$(CURDIR)/extra/haxelib_src
 
-HAXELIB_INTERP=HAXE_STD_PATH=$(CURDIR)/std $(CURDIR)/$(HAXE_OUTPUT) \
-	--cwd $(HAXELIB_SRC_PATH) each.hxml --run haxelib.client.Main
-
 $(HAXELIB_SRC_PATH)/haxelib_hxb.zip:
 	HAXE_STD_PATH=$(CURDIR)/std $(CURDIR)/$(HAXE_OUTPUT) --cwd $(HAXELIB_SRC_PATH) \
 		each.hxml --interp haxelib.client.Main --hxb haxelib_hxb.zip
