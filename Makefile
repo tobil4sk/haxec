@@ -74,12 +74,14 @@ endif
 
 all: haxe tools
 
-haxe:
+./$(HAXE_OUTPUT)$(EXTENSION):
 	$(DUNE_COMMAND) build --workspace dune-workspace.dev src-prebuild/prebuild.exe
 	_build/default/src-prebuild/prebuild.exe libparams $(LIB_PARAMS) > lib.sexp
 	_build/default/src-prebuild/prebuild.exe version "$(ADD_REVISION)" "$(BRANCH)" "$(COMMIT_SHA)" > src/compiler/version.ml
 	$(DUNE_COMMAND) build --workspace dune-workspace.dev src/haxe.exe
 	cp -f _build/default/src/haxe.exe ./"$(HAXE_OUTPUT)"
+
+# haxe: ./$(HAXE_OUTPUT)$(EXTENSION)
 
 plugin: haxe
 	$(DUNE_COMMAND) build --workspace dune-workspace.dev plugins/$(PLUGIN)/$(PLUGIN).cmxs
@@ -127,7 +129,7 @@ haxelib_hxcpp: $(HAXELIB_SRC_PATH)/haxelib_hxb.zip
 haxelib: $(HAXELIB_SRC_PATH)/haxelib_hxb.zip haxelib_hxcpp
 	hxcpp_path=`$(HAXELIB_INTERP) libpath hxcpp` \
 	HAXE_STD_PATH=$(HAXE_STD_PATH) $(CURDIR)/$(HAXE_OUTPUT) --cwd $(HAXELIB_SRC_PATH) \
-		client_cpp.hxml -D destination=$(CURDIR)/$(HAXELIB_OUTPUT) -D no-compilation -D hxcpp.path=$$hxcpp_path
+		client_cpp.hxml -D destination=../../../../$(HAXELIB_OUTPUT) -D no-compilation -D hxcpp.path=$$hxcpp_path
 	$(HAXELIB_INTERP) --cwd $(HAXELIB_SRC_PATH)/bin/cpp run hxcpp Build.xml haxe
 
 tools: haxelib
