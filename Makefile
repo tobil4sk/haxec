@@ -123,7 +123,7 @@ haxelib: $(HAXELIB_SRC_PATH)/haxelib_hxb.zip
 	hxcpp_path=`$(HAXELIB_INTERP) libpath hxcpp` \
 	HAXE_STD_PATH=$(HAXE_STD_PATH) $(CURDIR)/$(HAXE_OUTPUT) --cwd $(HAXELIB_SRC_PATH) \
 		client_cpp.hxml -D destination=$(CURDIR)/$(HAXELIB_OUTPUT) -D no-compilation -D hxcpp.path=$$hxcpp_path
-	cd $(HAXELIB_SRC_PATH)/bin/cpp && $(HAXELIB_INTERP) run hxcpp Build.xml haxe
+	$(HAXELIB_INTERP) --cwd $(HAXELIB_SRC_PATH)/bin/cpp run hxcpp Build.xml haxe
 
 tools: haxelib
 
