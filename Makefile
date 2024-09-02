@@ -121,8 +121,8 @@ haxelib_hxcpp: $(HAXELIB_SRC_PATH)/haxelib_hxb.zip
 	$(HAXELIB_INTERP) config > /dev/null || $(HAXELIB_INTERP) newrepo
 	$(HAXELIB_INTERP) path hxcpp > /dev/null || \
 		($(HAXELIB_INTERP) git hxcpp https://github.com/HaxeFoundation/hxcpp.git && \
-		cd "`$(HAXELIB_INTERP) libpath hxcpp`/tools/hxcpp" && \
-		$(CURDIR)/$(HAXE_OUTPUT) compile.hxml)
+		hxcpp_path=`$(HAXELIB_INTERP) libpath hxcpp` && \
+		$(CURDIR)/$(HAXE_OUTPUT) --cwd "$$hxcpp_path/tools/hxcpp" compile.hxml)
 
 # haxelib should depends on haxe, but we don't want to do that...
 # since haxelib isn't available in PATH yet, we have to pass -D no-compilation and build manually
