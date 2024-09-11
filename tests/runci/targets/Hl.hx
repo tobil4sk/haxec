@@ -84,6 +84,7 @@ class Hl {
 		final extraCompilerFlags = if (systemName == "Windows") ["-ldbghelp", "-municode"] else [];
 
 		runCommand(compiler, [
+			"-O3",
 			"-o", '$dir/$filename.exe',
 			'$dir/$filename.c',
 			'-I$dir',
