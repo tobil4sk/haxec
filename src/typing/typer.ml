@@ -703,7 +703,7 @@ and type_vars ctx vl p =
 				| Some e ->
 					let old_in_loop = ctx.e.in_loop in
 					if ev.ev_static then ctx.e.in_loop <- false;
-					let e = Std.finally (fun () -> ctx.e.in_loop <- old_in_loop) (type_expr ctx e) (WithType.with_type t) in
+					let e = Std.finally (fun () -> ctx.e.in_loop <- old_in_loop) (type_expr ctx e) (WithType.with_local_variable t n) in
 					let e = AbstractCast.cast_or_unify ctx t e p in
 					Some e
 			) in
@@ -1866,7 +1866,7 @@ and type_expr ?(mode=MGet) ctx (e,p) (with_type:WithType.t) =
 			| _ -> follow_null tmin
 		in
 		let e1_null_t = if is_nullable e1.etype then e1.etype else ctx.t.tnull e1.etype in
-		let e1 = vr#as_var "tmp" {e1 with etype = e1_null_t} in
+		let e1 = vr#as_var (Option.default "tmp" (WithType.get_expected_name with_type)) {e1 with etype = e1_null_t} in
 		let e_null = Builder.make_null e1_null_t e1.epos in
 		let e_cond = mk (TBinop(OpNotEq,e1,e_null)) ctx.t.tbool e1.epos in
 		let e_if = mk (TIf(e_cond,cast e1,Some e2)) iftype p in
