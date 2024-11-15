@@ -454,8 +454,8 @@ and parse_abstract_relations s =
 			(ct,p2)
 	in
 	match s with parser
-	| [< '(Const (Ident "to"),p1); t = parse_complex_type_at p1 >] -> (AbTo (check_display p1 t))
-	| [< '(Const (Ident "from"),p1); t = parse_complex_type_at p1 >] -> AbFrom (check_display p1 t)
+	| [< '(Const (Ident "to"),p1); t = parse_complex_type_at p1; _ = possible_autosemicolon >] -> (AbTo (check_display p1 t))
+	| [< '(Const (Ident "from"),p1); t = parse_complex_type_at p1; _ = possible_autosemicolon >] -> AbFrom (check_display p1 t)
 
 and parse_abstract_subtype s =
 	match s with parser
