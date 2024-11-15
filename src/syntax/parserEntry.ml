@@ -209,7 +209,7 @@ class dead_block_collector conds = object(self)
 end
 
 (* parse main *)
-let parse entry ctx code file =
+let parse entry toplevel ctx code file =
 	let old = Lexer.save() in
 	let restore_cache = TokenCache.clear () in
 	let was_display = !in_display in
@@ -361,7 +361,8 @@ let parse entry ctx code file =
 			let auto_semicolon_pos' = !auto_semicolon_pos in
 			let t = next_token() in
 			let allows_auto_semicolon = match fst t with
-				| Semicolon | PClose | BkClose | Comma | DblDot | Dot | Kwd Catch | Kwd Else | Binop _ -> false
+				| Eof when not toplevel -> false
+				| Semicolon | PClose | BkClose | Comma | DblDot | Dot | Arrow | Kwd Catch | Kwd Else | Binop _ -> false
 				| _ -> true
 			in
 			begin match auto_semicolon_pos' with
@@ -447,7 +448,7 @@ let parse_string entry com s p error inlined =
 		in_display_file := false;
 	end;
 	let result = try
-		parse entry com (Sedlexing.Utf8.from_string s) p.pfile
+		parse entry false com (Sedlexing.Utf8.from_string s) p.pfile
 	with Error (e,pe) ->
 		restore();
 		error (error_msg e) (if inlined then pe else p)
