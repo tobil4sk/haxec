@@ -1317,7 +1317,7 @@ and parse_function p1 inl s =
 	in
 	let pl = parse_constraint_params s in
 	match s with parser
-	| [< '(POpen,_); al = psep_trailing Comma parse_fun_param; '(PClose,_); t = popt parse_type_hint; s >] ->
+	| [< '(POpen,_); al = psep_trailing Comma parse_fun_param; '(PClose,_); t = popt parse_type_hint; _ = possible_autosemicolon; s >] ->
 		let make e =
 			let f = {
 				f_params = pl;
