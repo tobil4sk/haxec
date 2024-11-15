@@ -103,15 +103,15 @@ let question_mark = parser
 	| [< '(Question,p) >] -> p
 
 let semicolon s =
-	if fst (last_token s) = BrClose then
-		match s with parser
-		| [< '(Semicolon,p) >] -> p
-		| [< >] -> snd (last_token s)
-	else
-		match s with parser
-		| [< '(Semicolon,p) >] -> p
-		| [< s >] ->
-			syntax_error Missing_semicolon s (next_pos s)
+	match s with parser
+	| [< '(Semicolon,p) >] -> p
+	| [< '(AutoSemicolon,p) >] -> p
+	| [< s >] ->
+		syntax_error Missing_semicolon s (next_pos s)
+
+let possible_autosemicolon = parser
+	| [< '(AutoSemicolon,_) >] -> ()
+	| [< >] -> ()
 
 let check_redundant_var p1 = parser
 	| [< '(Kwd Var),p2; s >] ->
@@ -171,7 +171,7 @@ and parse_type_decls mode pmax pack acc s =
 and parse_abstract doc meta flags p1 = parser
 	| [< name = type_name; tl = parse_constraint_params; st = parse_abstract_subtype; sl = plist parse_abstract_relations; s >] ->
 		let fl,p2 = match s with parser
-			| [< '(BrOpen,_); fl, p2 = parse_class_fields false p1 >] -> fl,p2
+			| [< '(BrOpen,_); fl, p2 = parse_class_fields false p1; '(AutoSemicolon,_) >] -> fl,p2
 			| [< >] -> syntax_error (Expected ["{";"to";"from"]) s ([],last_pos s)
 		in
 		let flags = (match st with None -> flags | Some t -> AbOver t :: flags) in
@@ -218,7 +218,9 @@ and parse_class_content doc meta flags n p1 s =
 			end
 	in
 	let hl = loop false (last_pos s) [] in
-	let fl, p2 = parse_class_fields false p1 s in
+	let fl, p2 = match s with parser
+		| [< fl, p2 = parse_class_fields false p1; '(AutoSemicolon,_) >] -> fl, p2
+	in
 	(EClass {
 		d_name = name;
 		d_doc = doc_from_string_opt doc;
@@ -236,7 +238,7 @@ and parse_type_decl mode s =
 		match s with parser
 		| [< '(Kwd Function,p1); name = dollar_ident; pl = parse_constraint_params; '(POpen,_); args = psep_trailing Comma parse_fun_param; '(PClose,_); t = popt parse_type_hint; s >] ->
 			let e, p2 = (match s with parser
-				| [< e = expr; s >] ->
+				| [< _ = possible_autosemicolon; e = expr; s >] ->
 					ignore(semicolon s);
 					Some e, pos e
 				| [< p = semicolon >] -> None, p
@@ -279,7 +281,7 @@ and parse_type_decl mode s =
 			begin match s with parser
 			| [< '(Kwd Abstract,p1); a,p = parse_abstract doc meta (AbEnum :: (convert_abstract_flags c)) p1 >] ->
 				(EAbstract a,p)
-			| [< name = type_name; tl = parse_constraint_params; '(BrOpen,_); l = plist parse_enum; '(BrClose,p2) >] ->
+			| [< name = type_name; tl = parse_constraint_params; '(BrOpen,_); l = plist parse_enum; '(BrClose,p2); '(AutoSemicolon,_) >] ->
 				(EEnum {
 					d_name = name;
 					d_doc = doc_from_string_opt doc;
@@ -294,6 +296,7 @@ and parse_type_decl mode s =
 		| [< '(Kwd Typedef,p1); name = type_name; tl = parse_constraint_params; '(Binop OpAssign,p2); t = parse_complex_type_at p2; s >] ->
 			(match s with parser
 			| [< '(Semicolon,_) >] -> ()
+			| [< '(AutoSemicolon,_) >] -> ()
 			| [< >] -> ());
 			(ETypedef {
 				d_name = name;
@@ -865,12 +868,12 @@ and parse_type_anonymous s =
 			} :: acc
 		in
 		begin match s with parser
-		| [< '(BrClose,p2) >] -> next [],p2
 		| [< '(Comma,p2) >] ->
 			(match s with parser
-			| [< '(BrClose,p2) >] -> next [],p2
 			| [< l,p2 = parse_type_anonymous >] -> next l,punion p1 p2
+			| [< _ = possible_autosemicolon; '(BrClose,p2) >] -> next [],p2
 			| [< >] -> serror());
+		| [< _ = possible_autosemicolon; '(BrClose,p2) >] -> next [],p2
 		| [< >] ->
 			syntax_error (Expected [",";"}"]) s (next [],p2)
 		end
@@ -909,6 +912,9 @@ and parse_function_field doc meta al = parser
 	| [< '(Kwd Function,p1); name = parse_fun_name; pl = parse_constraint_params; '(POpen,_); args = psep_trailing Comma parse_fun_param; '(PClose,_); t = popt parse_type_hint; s >] ->
 		let e, p2 = (match s with parser
 			| [< e = expr; s >] ->
+				ignore(semicolon s);
+				Some e, pos e
+			| [< '(AutoSemicolon,_); e = expr; s >] ->
 				ignore(semicolon s);
 				Some e, pos e
 			| [< p = semicolon >] -> None, p
@@ -1391,7 +1397,7 @@ and expr = parser
 		(match s with parser
 		| [< b = block1; s >] ->
 			let p2 = match s with parser
-				| [< '(BrClose,p2) >] -> p2
+				| [< _ = possible_autosemicolon; '(BrClose,p2) >] -> p2
 				| [< >] ->
 					(* Ignore missing } if we are resuming and "guess" the last position. *)
 					syntax_error (Expected ["}"]) s (pos (next_token s))
@@ -1539,7 +1545,8 @@ and expr = parser
 		(EWhile (cond,e,NormalWhile),punion p1 (pos e))
 	| [< '(Kwd Do,p1); e = secure_expr; s >] ->
 		begin match s with parser
-			| [< '(Kwd While,_); '(POpen,_); cond = secure_expr; s >] ->
+			(* auto semicolon may have been inserted before while, ignore it *)
+			| [< _ = possible_autosemicolon; '(Kwd While,_); '(POpen,_); cond = secure_expr; s >] ->
 				let p2 = expect_unless_resume_p PClose s in
 				(EWhile (cond,e,DoWhile),punion p1 p2)
 			| [< >] ->
@@ -1662,7 +1669,7 @@ and parse_switch_cases eswitch cases = parser
 		let l , def = parse_switch_cases eswitch cases s in
 		(match def with None -> () | Some _ -> syntax_error Duplicate_default ~pos:(Some p1) s ());
 		l , Some b
-	| [< '(Kwd Case,p1); el = psep Comma expr_or_var; eg = popt parse_guard; s >] ->
+	| [< '(Kwd Case,p1); el = psep Comma expr_or_var; _ = possible_autosemicolon; eg = popt parse_guard; s >] ->
 		let pdot = expect_unless_resume_p DblDot s in
 		if !was_auto_triggered then check_resume pdot (fun () -> ()) (fun () -> ());
 		(match el with

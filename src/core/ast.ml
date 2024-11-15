@@ -122,6 +122,7 @@ type token =
 	| Binop of binop
 	| Unop of unop
 	| Semicolon
+	| AutoSemicolon
 	| Comma
 	| BrOpen
 	| BrClose
@@ -611,7 +612,7 @@ let s_token = function
 	| CommentLine s -> "//"^s
 	| Binop o -> s_binop o
 	| Unop o -> s_unop o
-	| Semicolon -> ";"
+	| Semicolon | AutoSemicolon -> ";"
 	| Comma -> ","
 	| BkOpen -> "["
 	| BkClose -> "]"

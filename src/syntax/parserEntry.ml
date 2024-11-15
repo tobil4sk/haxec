@@ -216,6 +216,7 @@ let parse entry ctx code file =
 	let was_display_file = !in_display_file in
 	let old_code = !code_ref in
 	let old_macro = !in_macro in
+	let auto_semicolon_pos = ref None in
 	code_ref := code;
 	in_display := display_position#get <> null_pos;
 	in_display_file := !in_display && display_position#is_in_file (Path.UniqueKey.create file);
@@ -247,6 +248,7 @@ let parse entry ctx code file =
 	let rec next_token() = process_token (Lexer.token code)
 
 	and process_token tk =
+		auto_semicolon_pos := None;
 		match fst tk with
 		| Comment s ->
 			(* if encloses_resume (pos tk) then syntax_completion SCComment (pos tk); *)
@@ -292,6 +294,9 @@ let parse entry ctx code file =
 			next_token();
 		| Sharp s ->
 			sharp_error s (pos tk)
+		| BrClose ->
+			auto_semicolon_pos := Some (pos tk);
+			tk
 		| _ ->
 			tk
 
@@ -348,10 +353,32 @@ let parse entry ctx code file =
 	and skip_tokens p test = skip_tokens_loop p test (Lexer.token code)
 
 	in
+	(* to insert an automatic semicolon, we need to delay the current token *)
+	let delayed_token = ref None in
 	let s = Stream.from (fun _ ->
-		let t = next_token() in
-		TokenCache.add t;
-		Some t
+		match !delayed_token with
+		| None ->
+			let auto_semicolon_pos' = !auto_semicolon_pos in
+			let t = next_token() in
+			let allows_auto_semicolon = match fst t with
+				| Semicolon | PClose | BkClose | Comma | DblDot | Dot | Kwd Catch | Kwd Else | Binop _ -> false
+				| _ -> true
+			in
+			begin match auto_semicolon_pos' with
+			| Some p when allows_auto_semicolon -> begin
+				let auto_semicolon = (AutoSemicolon, p) in
+				delayed_token := Some t;
+				TokenCache.add auto_semicolon;
+				Some auto_semicolon
+			end
+			| _ ->
+				TokenCache.add t;
+				Some t
+			end
+		| Some t ->
+			delayed_token := None;
+			TokenCache.add t;
+			Some t
 	) in
 	try
 		let l = entry s in
