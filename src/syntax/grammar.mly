@@ -1579,7 +1579,7 @@ and expr_next e1 s =
 		e1
 
 and expr_next' e1 = parser
-	| [< '(BrOpen,p1) when is_dollar_ident e1; eparam = expr; '(BrClose,p2); s >] ->
+	| [< '(BrOpen,p1) when is_dollar_ident e1; eparam = expr; _ = possible_autosemicolon; '(BrClose,p2); s >] ->
 		(match fst e1 with
 		| EConst(Ident n) -> expr_next (EMeta((Meta.from_string n,[],snd e1),eparam), punion p1 p2) s
 		| _ -> die "" __LOC__)
