@@ -266,7 +266,13 @@ class Compiler {
 				switch (t) {
 					case TInst(c, _):
 						name = c.toString();
-						b = c.get();
+						var c = c.get();
+						switch (c.kind) {
+							case KModuleFields(module):
+								name = module;
+							case _:
+						}
+						b = c;
 					case TEnum(e, _):
 						name = e.toString();
 						b = e.get();
