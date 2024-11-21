@@ -20,15 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package java.vm;
+package jvm.net;
 
-@:native('haxe.java.vm.Gc') class Gc {
-	public static function run(major:Bool) {
-		java.lang.System.gc();
-	}
-
-	public static function stats():{heap:Int, free:Int} {
-		var r = java.lang.Runtime.getRuntime();
-		return {heap: cast r.totalMemory(), free: cast r.freeMemory()};
+@:native('haxe.java.net.SslSocket') class SslSocket extends sys.net.Socket {
+	override private function create():Void {
+		try {
+			this.sock = java.javax.net.ssl.SSLSocketFactory.getDefault().createSocket();
+			this.server = java.javax.net.ssl.SSLServerSocketFactory.getDefault().createServerSocket();
+		} catch (e:Dynamic)
+			throw e;
 	}
 }

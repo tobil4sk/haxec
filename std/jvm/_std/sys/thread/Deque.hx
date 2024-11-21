@@ -20,32 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package haxe;
+package sys.thread;
 
-@:coreApi class Resource {
-	@:keep static var content:Array<String>;
+@:coreApi
+@:native('haxe.java.vm.Deque')
+@:nativeGen class Deque<T> {
+	var lbd:java.util.concurrent.LinkedBlockingDeque<T>;
 
-	public static inline function listNames():Array<String> {
-		return content.copy();
+	public function new() {
+		lbd = new java.util.concurrent.LinkedBlockingDeque<T>();
 	}
 
-	@:access(haxe.io.Path.escape)
-	public static function getString(name:String):String {
-		name = haxe.io.Path.escape(name, true);
-		var stream = cast(Resource, java.lang.Class<Dynamic>).getResourceAsStream("/" + name);
-		if (stream == null)
-			return null;
-		var stream = new java.io.NativeInput(stream);
-		return stream.readAll().toString();
+	public function add(i:T):Void {
+		lbd.add(i);
 	}
 
-	@:access(haxe.io.Path.escape)
-	public static function getBytes(name:String):haxe.io.Bytes {
-		name = haxe.io.Path.escape(name, true);
-		var stream = cast(Resource, java.lang.Class<Dynamic>).getResourceAsStream("/" + name);
-		if (stream == null)
-			return null;
-		var stream = new java.io.NativeInput(stream);
-		return stream.readAll();
+	public function push(i:T):Void {
+		lbd.push(i);
+	}
+
+	public inline function pop(block:Bool):Null<T> {
+		return if (block) {
+			lbd.take();
+		} else {
+			lbd.poll();
+		}
 	}
 }

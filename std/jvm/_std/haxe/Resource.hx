@@ -20,6 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package java.vm;
+package haxe;
 
-@:deprecated typedef Deque<T> = sys.thread.Deque<T>;
+@:coreApi class Resource {
+	@:keep static var content:Array<String>;
+
+	public static inline function listNames():Array<String> {
+		return content.copy();
+	}
+
+	@:access(haxe.io.Path.escape)
+	public static function getString(name:String):String {
+		name = haxe.io.Path.escape(name, true);
+		var stream = cast(Resource, java.lang.Class<Dynamic>).getResourceAsStream("/" + name);
+		if (stream == null)
+			return null;
+		var stream = new jvm.io.NativeInput(stream);
+		return stream.readAll().toString();
+	}
+
+	@:access(haxe.io.Path.escape)
+	public static function getBytes(name:String):haxe.io.Bytes {
+		name = haxe.io.Path.escape(name, true);
+		var stream = cast(Resource, java.lang.Class<Dynamic>).getResourceAsStream("/" + name);
+		if (stream == null)
+			return null;
+		var stream = new jvm.io.NativeInput(stream);
+		return stream.readAll();
+	}
+}
