@@ -343,6 +343,7 @@ static int verify_callback(void* param, mbedtls_x509_crt *crt, int depth, uint32
 		}
 		if(policy_status.dwError != 0) {
 			// TODO: properly map errors
+			printf("%d\n", policy_status.dwError);
 			*flags |= MBEDTLS_X509_BADCERT_OTHER;
 		}
 		CertFreeCertificateChain(chain_context);
