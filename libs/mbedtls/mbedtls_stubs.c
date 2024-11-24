@@ -341,7 +341,9 @@ static int verify_callback(void* param, mbedtls_x509_crt *crt, int depth, uint32
 			CertCloseStore(store, 0);
 			return MBEDTLS_ERR_X509_FATAL_ERROR;
 		}
-		if(policy_status.dwError != 0) {
+		if(policy_status.dwError == 0) {
+			*flags = 0;
+		} else {
 			// TODO: properly map errors
 			printf("%d\n", policy_status.dwError);
 			fflush(stdout);
