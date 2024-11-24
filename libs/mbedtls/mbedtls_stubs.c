@@ -304,7 +304,7 @@ static struct custom_operations ssl_config_ops = {
 
 #ifdef _WIN32
 static int verify_callback(void* param, mbedtls_x509_crt *crt, int depth, uint32_t *flags) {
-	printf("verify_callback(): %d\n", flags);
+	printf("verify_callback(): %d\n", *flags);
 	if(depth == 0) {
 		HCERTSTORE store = CertOpenStore(CERT_STORE_PROV_MEMORY, 0, 0, CERT_STORE_DEFER_CLOSE_UNTIL_LAST_FREE_FLAG, NULL);
 		if(store == NULL) {
@@ -356,6 +356,7 @@ static int verify_callback(void* param, mbedtls_x509_crt *crt, int depth, uint32
 		CertFreeCertificateContext(primary_context);
 		CertCloseStore(store, 0);
 	}
+	printf("verify_callback(): done %d\n", *flags);
 	return 0;
 }
 #endif
