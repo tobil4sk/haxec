@@ -305,57 +305,44 @@ static struct custom_operations ssl_config_ops = {
 #ifdef _WIN32
 static int verify_callback(void* param, mbedtls_x509_crt *crt, int depth, uint32_t *flags) {
 	printf("verify_callback(): %d\n", *flags);
-	if(depth == 0) {
-		HCERTSTORE store = CertOpenStore(CERT_STORE_PROV_MEMORY, 0, 0, CERT_STORE_DEFER_CLOSE_UNTIL_LAST_FREE_FLAG, NULL);
-		if(store == NULL) {
-			return MBEDTLS_ERR_X509_FATAL_ERROR;
-		}
-		PCCERT_CONTEXT primary_context = {0};
-		if(!CertAddEncodedCertificateToStore(store, X509_ASN_ENCODING, crt->raw.p, crt->raw.len, CERT_STORE_ADD_REPLACE_EXISTING, &primary_context)) {
-			CertCloseStore(store, 0);
-			return MBEDTLS_ERR_X509_FATAL_ERROR;
-		}
-		while(crt->next) {
-			crt = crt->next;
-			PCCERT_CONTEXT ctx = {0};
-			if (!CertAddEncodedCertificateToStore(store, X509_ASN_ENCODING, crt->raw.p, crt->raw.len, CERT_STORE_ADD_REPLACE_EXISTING, &ctx))
-			{
-				CertFreeCertificateContext(primary_context);
-				CertCloseStore(store, 0);
-				return MBEDTLS_ERR_X509_FATAL_ERROR;
-			}
-			CertFreeCertificateContext(ctx);
-		}
-		PCCERT_CHAIN_CONTEXT chain_context = {0};
-		CERT_CHAIN_PARA parameters = {0};
-		if(!CertGetCertificateChain(NULL, primary_context, NULL, store, &parameters, 0, NULL, &chain_context)) {
-			CertFreeCertificateChain(chain_context);
-			CertFreeCertificateContext(primary_context);
-			CertCloseStore(store, 0);
-			return MBEDTLS_ERR_X509_FATAL_ERROR;
-		}
-		CERT_CHAIN_POLICY_PARA policy_parameters = {0};
-		CERT_CHAIN_POLICY_STATUS policy_status = {0};
-		if(!CertVerifyCertificateChainPolicy(CERT_CHAIN_POLICY_SSL, chain_context, &policy_parameters, &policy_status)) {
-			CertFreeCertificateChain(chain_context);
-			CertFreeCertificateContext(primary_context);
-			CertCloseStore(store, 0);
-			return MBEDTLS_ERR_X509_FATAL_ERROR;
-		}
-		if(policy_status.dwError == 0) {
-			printf("verify_callback: %d\n", policy_status.dwError);
-			fflush(stdout);
-			*flags = 0;
-		} else {
-			// TODO: properly map errors
-			printf("verify_callback: %d\n", policy_status.dwError);
-			fflush(stdout);
-			*flags |= MBEDTLS_X509_BADCERT_OTHER;
-		}
+	HCERTSTORE store = CertOpenStore(CERT_STORE_PROV_MEMORY, 0, 0, CERT_STORE_DEFER_CLOSE_UNTIL_LAST_FREE_FLAG, NULL);
+	if(store == NULL) {
+		return MBEDTLS_ERR_X509_FATAL_ERROR;
+	}
+	PCCERT_CONTEXT primary_context = {0};
+	if(!CertAddEncodedCertificateToStore(store, X509_ASN_ENCODING, crt->raw.p, crt->raw.len, CERT_STORE_ADD_REPLACE_EXISTING, &primary_context)) {
+		CertCloseStore(store, 0);
+		return MBEDTLS_ERR_X509_FATAL_ERROR;
+	}
+	PCCERT_CHAIN_CONTEXT chain_context = {0};
+	CERT_CHAIN_PARA parameters = {0};
+	if(!CertGetCertificateChain(NULL, primary_context, NULL, store, &parameters, 0, NULL, &chain_context)) {
 		CertFreeCertificateChain(chain_context);
 		CertFreeCertificateContext(primary_context);
 		CertCloseStore(store, 0);
+		return MBEDTLS_ERR_X509_FATAL_ERROR;
 	}
+	CERT_CHAIN_POLICY_PARA policy_parameters = {0};
+	CERT_CHAIN_POLICY_STATUS policy_status = {0};
+	if(!CertVerifyCertificateChainPolicy(CERT_CHAIN_POLICY_SSL, chain_context, &policy_parameters, &policy_status)) {
+		CertFreeCertificateChain(chain_context);
+		CertFreeCertificateContext(primary_context);
+		CertCloseStore(store, 0);
+		return MBEDTLS_ERR_X509_FATAL_ERROR;
+	}
+	if(policy_status.dwError == 0) {
+		printf("verify_callback: %d\n", policy_status.dwError);
+		fflush(stdout);
+		*flags = 0;
+	} else {
+		// TODO: properly map errors
+		printf("verify_callback: %d\n", policy_status.dwError);
+		fflush(stdout);
+		*flags |= MBEDTLS_X509_BADCERT_OTHER;
+	}
+	CertFreeCertificateChain(chain_context);
+	CertFreeCertificateContext(primary_context);
+	CertCloseStore(store, 0);
 	printf("verify_callback(): done %d\n", *flags);
 	return 0;
 }
