@@ -22,7 +22,6 @@ open DisplayTypes.DisplayMode
 open Common
 open Type
 open Typecore
-open Resolution
 open Error
 open Globals
 
