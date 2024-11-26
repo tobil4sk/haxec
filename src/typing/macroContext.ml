@@ -608,10 +608,10 @@ and flush_macro_context mint mctx =
 	mctx.com.Common.modules <- modules;
 	(* we should maybe ensure that all filters in Main are applied. Not urgent atm *)
 	let expr_filters = [
-		"handle_abstract_casts",AbstractCast.handle_abstract_casts mctx;
-		"local_statics",LocalStatic.run mctx;
-		"Exceptions",Exceptions.filter mctx;
-		"captured_vars",CapturedVars.captured_vars mctx.com;
+		"handle_abstract_casts",AbstractCast.handle_abstract_casts;
+		"local_statics",LocalStatic.run;
+		"Exceptions",Exceptions.filter;
+		"captured_vars",(fun _ -> CapturedVars.captured_vars mctx.com);
 	] in
 	(*
 		some filters here might cause side effects that would break compilation server.
@@ -752,7 +752,7 @@ let load_macro_module mctx com cpath display p =
 	let old = mctx.com.display in
 	if display then mctx.com.display <- com.display;
 	let mloaded = TypeloadModule.load_module ~origin:MDepFromMacro mctx m p in
-	mctx.m <- {
+	(* mctx.m <- {
 		curmod = mloaded;
 		import_resolution = new resolution_list ["import";s_type_path cpath];
 		own_resolution = None;
@@ -760,7 +760,7 @@ let load_macro_module mctx com cpath display p =
 		module_using = [];
 		import_statements = [];
 		is_display_file = (com.display.dms_kind <> DMNone && DisplayPosition.display_position#is_in_file (Path.UniqueKey.lazy_key mloaded.m_extra.m_file));
-	};
+	}; *)
 	mloaded,(fun () -> mctx.com.display <- old)
 
 let load_macro'' com mctx display cpath f p =
@@ -794,7 +794,7 @@ let load_macro'' com mctx display cpath f p =
 		restore();
 		if not com.is_macro_context then flush_macro_context mint mctx;
 		mctx.com.cached_macros#add (cpath,f) meth;
-		mctx.m <- {
+		(* mctx.m <- {
 			curmod = null_module;
 			import_resolution = new resolution_list ["import";s_type_path cpath];
 			own_resolution = None;
@@ -802,7 +802,7 @@ let load_macro'' com mctx display cpath f p =
 			module_using = [];
 			import_statements = [];
 			is_display_file = false;
-		};
+		}; *)
 		t();
 		meth
 
@@ -1017,7 +1017,6 @@ let type_macro ctx mode cpath f (el:Ast.expr list) p =
 	e
 
 let call_macro mctx args margs call p =
-	mctx.c.curclass <- null_class;
 	let el, _ = CallUnification.unify_call_args mctx args margs t_dynamic p false false false in
 	call (List.map (fun e -> try Interp.make_const e with Exit -> raise_typing_error "Argument should be a constant" e.epos) el)
 
