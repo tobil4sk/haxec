@@ -199,23 +199,11 @@ let make_macro_com_api com mcom p =
 		type_expr = (fun e ->
 			Interp.exc_string "unsupported"
 		);
-		flush_context = (fun f ->
-			Interp.exc_string "unsupported"
-		);
 		store_typed_expr = (fun te ->
 			let p = te.epos in
 			snd (Typecore.store_typed_expr com te p)
 		);
 		allow_package = (fun v -> Common.allow_package com v);
-		set_js_generator = (fun gen ->
-			com.js_gen <- Some (fun() ->
-				Path.mkdir_from_path com.file;
-				let js_ctx = Genjs.alloc_ctx (Common.to_gctx com) (Gctx.get_es_version com.defines) in
-				let t = macro_timer com ["jsGenerator"] in
-				gen js_ctx;
-				t()
-			);
-		);
 		get_local_type = (fun() ->
 			Interp.exc_string "unsupported"
 		);
@@ -415,9 +403,6 @@ let make_macro_api ctx mctx p =
 		);
 		MacroApi.type_expr = (fun e ->
 			typing_timer ctx true (fun ctx -> type_expr ctx e WithType.value)
-		);
-		MacroApi.flush_context = (fun f ->
-			typing_timer ctx true (fun _ -> f ())
 		);
 		MacroApi.get_local_type = (fun() ->
 			match ctx.c.get_build_infos() with
