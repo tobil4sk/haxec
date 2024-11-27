@@ -592,15 +592,17 @@ let init_macro_interp mctx mint =
 and flush_macro_context mint mctx =
 	let t = macro_timer mctx.com ["flush"] in
 	let mctx = (match mctx.g.macros with None -> die "" __LOC__ | Some (_,mctx) -> mctx) in
+	let main_module = Finalization.maybe_load_main mctx in
 	Finalization.finalize mctx;
-	let _, types, modules = Finalization.generate mctx in
+	let _, types, modules = Finalization.generate mctx main_module in
 	mctx.com.types <- types;
 	mctx.com.Common.modules <- modules;
+	let ectx = Exceptions.create_exception_context mctx in
 	(* we should maybe ensure that all filters in Main are applied. Not urgent atm *)
 	let expr_filters = [
 		"handle_abstract_casts",AbstractCast.handle_abstract_casts;
 		"local_statics",LocalStatic.run;
-		"Exceptions",Exceptions.filter;
+		"Exceptions",(fun _ -> Exceptions.filter ectx);
 		"captured_vars",(fun _ -> CapturedVars.captured_vars mctx.com);
 	] in
 	(*
@@ -645,7 +647,7 @@ and flush_macro_context mint mctx =
 	in
 	let type_filters = [
 		FiltersCommon.remove_generic_base;
-		Exceptions.patch_constructors mctx;
+		Exceptions.patch_constructors mctx ectx;
 		(fun mt -> AddFieldInits.add_field_inits mctx.c.curclass.cl_path (RenameVars.init mctx.com) mctx.com mt);
 		Filters.update_cache_dependencies ~close_monomorphs:false mctx.com;
 		minimal_restore;
@@ -692,6 +694,7 @@ let create_macro_interp api mctx =
 
 let create_macro_context com =
 	let com2 = Common.clone com true in
+	enter_stage com2 CInitMacrosDone;
 	com.get_macros <- (fun() -> Some com2);
 	com2.package_rules <- PMap.empty;
 	(* Inherit most display settings, but require normal typing. *)

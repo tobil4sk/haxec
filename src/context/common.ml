@@ -859,6 +859,7 @@ let create compilation_step cs version args display_mode =
 			tstring = mk_mono();
 			tnull = (fun _ -> die "Could use locate abstract Null<T> (was it redefined?)" __LOC__);
 			tarray = (fun _ -> die "Could not locate class Array<T> (was it redefined?)" __LOC__);
+			titerator = (fun _ -> die "Could not locate typedef Iterator<T> (was it redefined?)" __LOC__);
 		};
 		std = null_class;
 		file_keys = new file_keys;
@@ -898,6 +899,7 @@ let clone com is_macro_context =
 	let t = com.basic in
 	{ com with
 		cache = None;
+		stage = CCreated;
 		basic = { t with
 			tvoid = mk_mono();
 			tany = mk_mono();
