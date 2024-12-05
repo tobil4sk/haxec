@@ -249,6 +249,9 @@ module Monomorph = struct
 			| None ->
 				List.iter (add_down_constraint m2) m.tm_down_constraints;
 				List.iter (add_up_constraint m2) m.tm_up_constraints;
+				List.iter (fun modi ->
+					add_modifier m2 modi
+				) m.tm_modifiers;
 				do_bind m t;
 			| Some t ->
 				bind m t
