@@ -43,8 +43,11 @@ let psep sep f = parser
 	| [< >] -> []
 
 let rec psep_trailing sep f = parser
-	| [< v = f; '(sep2,_) when sep2 = sep; l = psep_trailing sep f >] -> v :: l
-	| [< v = f >] -> [v]
+	| [< v = f; s >] ->
+		begin match s with parser
+		| [< '(sep2,_) when sep2 = sep; l = psep_trailing sep f >] -> v :: l
+		| [< >] -> [v]
+		end
 	| [< >] -> []
 
 let pignore f =
