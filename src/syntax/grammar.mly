@@ -1240,9 +1240,13 @@ and parse_array_decl p1 s =
 and parse_var_decl_head final s =
 	let meta = parse_meta s in
 	match s with parser
-	| [< name, p = dollar_ident; '(POpen,p1); _ = property_ident; '(Comma,_); _ = property_ident; '(PClose,p2); t = popt parse_type_hint >] ->
-		syntax_error (Custom "Cannot define property accessors for local vars") ~pos:(Some (punion p1 p2)) s (meta,name,final,t,p)
-	| [< name, p = dollar_ident; t = popt parse_type_hint >] -> (meta,name,final,t,p)
+	| [< name, p = dollar_ident; >] ->
+		begin match s with parser
+		| [< t = popt parse_type_hint >] ->
+			(meta,name,final,t,p)
+		| [< '(POpen,p1); _ = property_ident; '(Comma,_); _ = property_ident; '(PClose,p2); t = popt parse_type_hint >] ->
+			syntax_error (Custom "Cannot define property accessors for local vars") ~pos:(Some (punion p1 p2)) s (meta,name,final,t,p)
+		end
 	| [< >] ->
 		(* This nonsense is here for the var @ case in issue #9639 *)
 		let rec loop meta = match meta with
