@@ -766,7 +766,7 @@ and type_type_params ctx host path p tpl =
 					| TInst (c2,_) when ttp.ttp_class == c2 ->
 						raise_typing_error "Recursive constraint parameter is not allowed" p
 					| TInst ({ cl_kind = KTypeParameter ttp },_) ->
-						List.iter loop (get_constraints ttp)
+						delay ctx.g PConnectField (fun () -> List.iter loop (get_constraints ttp))
 					| _ ->
 						()
 				in
