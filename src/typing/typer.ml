@@ -1206,7 +1206,7 @@ and type_map_declaration ctx e1 el with_type p =
 
 and type_local_function ctx_from kind f with_type p =
 	let name,inline = match kind with FKNamed (name,inline) -> Some name,inline | _ -> None,false in
-	let params = TypeloadFunction.type_function_params ctx_from f TPHLocal (match name with None -> "localfun" | Some (n,_) -> n) p in
+	let params = TypeloadFunction.type_function_params ctx_from f TPHLocal (match name with None -> "localfun" | Some (n,_) -> n) in
 	let curfun = match ctx_from.e.curfun with
 		| FunStatic -> FunStatic
 		| FunMemberAbstract

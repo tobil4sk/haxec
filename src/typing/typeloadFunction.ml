@@ -33,8 +33,8 @@ let save_field_state ctx =
 		ctx.f.locals <- locals;
 	)
 
-let type_function_params ctx fd host fname p =
-	Typeload.type_type_params ctx host ([],fname) p fd.f_params
+let type_function_params ctx fd host fname =
+	Typeload.type_type_params ctx host ([],fname) fd.f_params
 
 let type_function ctx (args : function_arguments) ret e do_display p =
 	ctx.e.ret <- ret;

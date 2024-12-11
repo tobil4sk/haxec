@@ -317,7 +317,7 @@ module ModuleLevel = struct
 		 List.iter (fun d ->
 			match d with
 			| ((EClass d, p),TClassDecl c) ->
-				c.cl_params <- type_type_params ctx_m TPHType c.cl_path p d.d_params;
+				c.cl_params <- type_type_params ctx_m TPHType c.cl_path d.d_params;
 				if Meta.has Meta.Generic c.cl_meta && c.cl_params <> [] then c.cl_kind <- KGeneric;
 				if Meta.has Meta.FunctionalInterface c.cl_meta then begin
 					if not (has_class_flag c CInterface) then
@@ -331,11 +331,11 @@ module ModuleLevel = struct
 				end;
 				if c.cl_path = (["haxe";"macro"],"MacroType") then c.cl_kind <- KMacroType;
 			| ((EEnum d, p),TEnumDecl e) ->
-				e.e_params <- type_type_params ctx_m TPHType e.e_path p d.d_params;
+				e.e_params <- type_type_params ctx_m TPHType e.e_path d.d_params;
 			| ((ETypedef d, p),TTypeDecl t) ->
-				t.t_params <- type_type_params ctx_m TPHType t.t_path p d.d_params;
+				t.t_params <- type_type_params ctx_m TPHType t.t_path d.d_params;
 			| ((EAbstract d, p),TAbstractDecl a) ->
-				a.a_params <- type_type_params ctx_m TPHType a.a_path p d.d_params;
+				a.a_params <- type_type_params ctx_m TPHType a.a_path d.d_params;
 			| _ ->
 				die "" __LOC__
 		) decls
@@ -344,7 +344,7 @@ end
 module TypeLevel = struct
 	let load_enum_field ctx_en e et is_flat index c =
 		let p = c.ec_pos in
-		let params = type_type_params ctx_en TPHEnumConstructor ([],fst c.ec_name) c.ec_pos c.ec_params in
+		let params = type_type_params ctx_en TPHEnumConstructor ([],fst c.ec_name) c.ec_params in
 		let ctx_ef = TyperManager.clone_for_enum_field ctx_en (params @ ctx_en.type_params) in
 		let rt = (match c.ec_type with
 			| None -> et

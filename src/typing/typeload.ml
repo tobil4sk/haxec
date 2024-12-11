@@ -33,7 +33,7 @@ open Typecore
 open Error
 open Globals
 
-let type_function_params_ref = ref (fun _ _ _ _ _ -> die "" __LOC__)
+let type_function_params_ref = ref (fun _ _ _ _ -> die "" __LOC__)
 
 let check_field_access ctx cff =
 	let display_access = ref None in
@@ -557,7 +557,7 @@ and load_complex_type' ctx allow_display mode (t,p) =
 					no_expr e;
 					topt LoadNormal t, Var { v_read = AccNormal; v_write = AccNormal }
 				| FFun fd ->
-					params := (!type_function_params_ref) ctx fd TPHAnonField (fst f.cff_name) p;
+					params := (!type_function_params_ref) ctx fd TPHAnonField (fst f.cff_name);
 					no_expr fd.f_expr;
 					let old = ctx.type_params in
 					ctx.type_params <- !params @ old;
@@ -652,7 +652,7 @@ and init_meta_overloads ctx co cf =
 						ttp.ttp_host <> TPHMethod
 					) ctx.type_params
 			end;
-			let params : type_params = (!type_function_params_ref) ctx f TPHMethod cf.cf_name p in
+			let params : type_params = (!type_function_params_ref) ctx f TPHMethod cf.cf_name in
 			ctx.type_params <- params @ ctx.type_params;
 			let topt mode = function None -> raise_typing_error "Explicit type required" p | Some t -> load_complex_type ctx true mode t in
 			let args =
@@ -707,22 +707,22 @@ let load_type_hint ?(opt=false) ctx pcur mode t =
 (* ---------------------------------------------------------------------- *)
 (* PASS 1 & 2 : Module and Class Structure *)
 
-let rec type_type_param ctx host path p tp =
+let rec type_type_param ctx host path tp =
 	let n = fst tp.tp_name in
 	let c = mk_class ctx.m.curmod (fst path @ [snd path],n) (pos tp.tp_name) (pos tp.tp_name) in
-	c.cl_params <- type_type_params ctx host c.cl_path p tp.tp_params;
+	c.cl_params <- type_type_params ctx host c.cl_path tp.tp_params;
 	c.cl_meta <- tp.Ast.tp_meta;
 	let ttp = mk_type_param c host None None in
 	if ctx.m.is_display_file && DisplayPosition.display_position#enclosed_in (pos tp.tp_name) then
 		DisplayEmitter.display_type ctx ttp.ttp_type (pos tp.tp_name);
 	ttp
 
-and type_type_params ctx host path p tpl =
+and type_type_params ctx host path tpl =
 	let names = ref [] in
 	let param_pairs = List.map (fun tp ->
 		if List.exists (fun name -> name = fst tp.tp_name) !names then display_error ctx.com ("Duplicate type parameter name: " ^ fst tp.tp_name) (pos tp.tp_name);
 		names := (fst tp.tp_name) :: !names;
-		tp,type_type_param ctx host path p tp
+		tp,type_type_param ctx host path tp
 	) tpl in
 	let params = List.map snd param_pairs in
 	let ctx = TyperManager.clone_for_type_params ctx (params @ ctx.type_params) in
@@ -764,7 +764,7 @@ and type_type_params ctx host path p tpl =
 				let rec loop t =
 					match follow t with
 					| TInst (c2,_) when ttp.ttp_class == c2 ->
-						raise_typing_error "Recursive constraint parameter is not allowed" p
+						raise_typing_error "Recursive constraint parameter is not allowed" (pos th)
 					| TInst ({ cl_kind = KTypeParameter ttp },_) ->
 						delay ctx.g PConnectField (fun () -> List.iter loop (get_constraints ttp))
 					| _ ->
