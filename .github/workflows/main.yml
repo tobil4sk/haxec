@@ -643,7 +643,7 @@ jobs:
           otool -L ./haxe
           otool -L ./haxelib
         env:
-          MAKE_FLAGS: ${{ env.HOMEBREW_PACKAGES == 'true' && 'STATICLINK=1 "LIB_PARAMS=/usr/local/lib/libz.a /usr/local/lib/libpcre2-8.a /usr/local/lib/libmbedtls.a /usr/local/lib/libmbedcrypto.a /usr/local/lib/libmbedx509.a -cclib ''-framework Security -framework CoreFoundation''"' || '' }}
+          MAKE_FLAGS: ${{ env.HOMEBREW_PACKAGES != 'true' && 'STATICLINK=1 "LIB_PARAMS=/usr/local/lib/libz.a /usr/local/lib/libpcre2-8.a /usr/local/lib/libmbedtls.a /usr/local/lib/libmbedcrypto.a /usr/local/lib/libmbedx509.a -cclib ''-framework Security -framework CoreFoundation''"' || '' }}
 
       - name: Upload artifact (x64)
         if: runner.arch == 'X64'
