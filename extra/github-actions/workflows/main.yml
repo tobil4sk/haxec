@@ -325,6 +325,40 @@ jobs:
       @import install-neko-unix.yml
       @import build-mac.yml
 
+  mac-build-brew:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-13]
+    runs-on: ${{ matrix.os }}
+    env:
+      PLATFORM: mac${{ matrix.os == 'macos-14' && '-arm64' || '' }}
+      OPAMYES: 1
+      MACOSX_DEPLOYMENT_TARGET: 10.13
+      OCAML_VERSION: 5.1.1
+      HOMEBREW_PACKAGES: true
+    steps:
+      - uses: actions/checkout@main
+        with:
+          submodules: recursive
+
+      - name: Cache opam
+        id: cache-opam
+        uses: actions/cache@v4
+        with:
+          path: ~/.opam/
+          key: ${{ matrix.os }}-${{ hashFiles('./haxe.opam', './libs/') }}-1
+
+      - name: Install dependencies
+        run: |
+          set -ex
+          brew install zlib pcre2 mbedtls neko
+
+      - name: Print Neko version
+        run: neko -version 2>&1
+
+      @import build-mac.yml
+
   windows64-test:
     needs: windows64-build
     runs-on: windows-latest
