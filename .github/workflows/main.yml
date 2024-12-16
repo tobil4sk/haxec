@@ -578,8 +578,8 @@ jobs:
           ls $(brew --prefix pcre2)
           ls $(brew --prefix zlib)
 
-          echo "C_INCLUDE_PATH=$(brew --prefix zlib)/include:$(brew --prefix pcre2)/include:$(brew --prefix mbedtls)/include" >> $GITHUB_ENV
-          echo "LIBRARY_PATH=$(brew --prefix zlib)/lib:$(brew --prefix pcre2)/lib:$(brew --prefix mbedtls)/lib" >> $GITHUB_ENV
+          echo "C_INCLUDE_PATH=$(brew --prefix zlib)/include:$(brew --prefix)/include" >> $GITHUB_ENV
+          echo "LIBRARY_PATH=$(brew --prefix zlib)/lib:$(brew --prefix)/lib" >> $GITHUB_ENV
 
       - name: Print Neko version
         run: neko -version 2>&1
