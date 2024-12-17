@@ -362,7 +362,7 @@ let type_field cfg ctx e i p mode (with_type : WithType.t) =
 			end;
 		| TMono r ->
 			let mk_field () = {
-				(mk_field i (mk_mono()) p null_pos) with
+				(mk_field i (spawn_monomorph ctx p) p null_pos) with
 				cf_kind = Var { v_read = AccNormal; v_write = if is_set then AccNormal else AccNo }
 			} in
 			let rec check_constr = function

@@ -71,6 +71,34 @@ and s_mono ctx m =
 		end
 	| Some t -> s_type ctx t
 
+(* TODO: refactor these two functions... *)
+and s_mono_explicit ctx m =
+	let print_name id extra =
+		let s = if show_mono_ids then
+			Printf.sprintf "Unknown<%d>" id
+		else
+			"Unknown"
+		in
+		let s = s ^ extra in
+		s_mono_modifiers s m
+	in
+	begin try
+		let id = List.assq m (!ctx) in
+		print_name id ""
+	with Not_found ->
+		let id = List.length !ctx in
+		ctx := (m,id) :: !ctx;
+		match m.tm_type with
+		| None ->
+			let s_const =
+				let s = s_mono_constraint_kind (s_type ctx) (!monomorph_classify_constraints_ref m) in
+				if s = "" then s else " : " ^ s
+			in
+			print_name id s_const
+		| Some t ->
+			print_name id (" := " ^ (s_type ctx) t)
+	end
+
 and s_type ctx t =
 	match t with
 	| TMono r ->
