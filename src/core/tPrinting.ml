@@ -39,36 +39,42 @@ let rec s_mono_constraint_kind s_type constr =
 	in
 	loop constr
 
+and s_mono_modifiers s m =
+	List.fold_left (fun s modi -> match modi with
+		| MNullable _ -> Printf.sprintf "Null<%s>" s
+		| MOpenStructure | MDynamic -> s
+	) s m.tm_modifiers
+
+and s_mono ctx m =
+	match m.tm_type with
+	| None ->
+		let print_name id extra =
+			let s = if show_mono_ids then
+				Printf.sprintf "Unknown<%d>" id
+			else
+				"Unknown"
+			in
+			let s = s ^ extra in
+			s_mono_modifiers s m
+		in
+		begin try
+			let id = List.assq m (!ctx) in
+			print_name id ""
+		with Not_found ->
+			let id = List.length !ctx in
+			ctx := (m,id) :: !ctx;
+			let s_const =
+				let s = s_mono_constraint_kind (s_type ctx) (!monomorph_classify_constraints_ref m) in
+				if s = "" then s else " : " ^ s
+			in
+			print_name id s_const
+		end
+	| Some t -> s_type ctx t
+
 and s_type ctx t =
 	match t with
 	| TMono r ->
-		(match r.tm_type with
-		| None ->
-			let print_name id extra =
-				let s = if show_mono_ids then
-					Printf.sprintf "Unknown<%d>" id
-				else
-					"Unknown"
-				in
-				let s = s ^ extra in
-				List.fold_left (fun s modi -> match modi with
-					| MNullable _ -> Printf.sprintf "Null<%s>" s
-					| MOpenStructure | MDynamic -> s
-				) s r.tm_modifiers
-			in
-			begin try
-				let id = List.assq t (!ctx) in
-				print_name id ""
-			with Not_found ->
-				let id = List.length !ctx in
-				ctx := (t,id) :: !ctx;
-				let s_const =
-					let s = s_mono_constraint_kind (s_type ctx) (!monomorph_classify_constraints_ref r) in
-					if s = "" then s else " : " ^ s
-				in
-				print_name id s_const
-			end
-		| Some t -> s_type ctx t)
+		s_mono ctx r
 	| TEnum (e,tl) ->
 		s_type_path e.e_path ^ s_type_params ctx tl
 	| TInst (c,tl) ->

@@ -157,7 +157,35 @@ let type_function ctx (args : function_arguments) ret e do_display p =
 		| _ -> e
 	in
 	List.iter (fun r -> r := Closed) ctx.e.opened;
-	List.iter (fun (m,p) -> safe_mono_close ctx m p) ctx.e.monomorphs.perfunction;
+	let close () = List.iter (fun (m,p) -> safe_mono_close ctx m p) ctx.e.monomorphs.perfunction; in
+	let mono_debug = Meta.has (Meta.Custom ":debug.mono") ctx.f.curfield.cf_meta in
+	if mono_debug then begin
+		let pctx = print_context () in
+		let print_mono i m =
+			Printf.sprintf "%4i: %s" i (s_mono pctx m)
+		in
+		print_endline "BEFORE:";
+		let monos = List.mapi (fun i (m,p) ->
+			let s = print_mono i m in
+			let spos = if p.pmin = -1 then
+				"unknown"
+			else begin
+				let l1,p1,_,_ = Lexer.get_pos_coords p in
+				Printf.sprintf "%i:%i" l1 p1
+			end in
+			print_endline (Printf.sprintf "%s (%s)" s spos);
+			(i,m,p,s)
+		) ctx.e.monomorphs.perfunction in
+		close();
+		print_endline "CHANGED:";
+		List.iter (fun (i,m,p,s) ->
+			let s' = print_mono i m in
+			if s <> s' then begin
+				print_endline s'
+			end
+		) monos
+	end else
+		close();
 	if is_position_debug then print_endline ("typing:\n" ^ (Texpr.dump_with_pos "" e));
 	e
 

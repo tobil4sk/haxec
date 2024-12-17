@@ -185,11 +185,8 @@ module BetterErrors = struct
 		| TMono r ->
 			(match r.tm_type with
 			| None ->
-				let name = Printf.sprintf "Unknown<%d>" (try List.assq t (!ctx) with Not_found -> let n = List.length !ctx in ctx := (t,n) :: !ctx; n) in
-				List.fold_left (fun s modi -> match modi with
-					| MNullable _ -> Printf.sprintf "Null<%s>" s
-					| MOpenStructure | MDynamic -> s
-				) name r.tm_modifiers
+				let name = Printf.sprintf "Unknown<%d>" (try List.assq r (!ctx) with Not_found -> let n = List.length !ctx in ctx := (r,n) :: !ctx; n) in
+				s_mono_modifiers name r;
 			| Some t ->
 				s_type ctx t)
 		| TEnum (e,tl) ->
