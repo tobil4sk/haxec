@@ -161,7 +161,7 @@ let type_function ctx (args : function_arguments) ret e do_display p =
 	if mono_debug then begin
 		let pctx = print_context () in
 		let print_mono i m =
-			Printf.sprintf "%4i: %s" i (s_mono_explicit pctx m)
+			Printf.sprintf "%4i: %s" i (MonomorphPrinting.s_mono s_type pctx true m)
 		in
 		print_endline "BEFORE:";
 		let monos = List.mapi (fun i (m,p) ->
