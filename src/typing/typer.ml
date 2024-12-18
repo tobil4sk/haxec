@@ -1136,17 +1136,17 @@ and type_try ctx e1 catches with_type p =
 	mk (TTry (e1,List.rev catches)) t p
 
 and type_map_declaration ctx e1 el with_type p =
-	let (tkey,tval,has_type) =
+	let expected_kv =
 		let get_map_params t = match follow t with
-			| TAbstract({a_path=["haxe";"ds"],"Map"},[tk;tv]) -> tk,tv,true
-			| TInst({cl_path=["haxe";"ds"],"IntMap"},[tv]) -> ctx.t.tint,tv,true
-			| TInst({cl_path=["haxe";"ds"],"StringMap"},[tv]) -> ctx.t.tstring,tv,true
-			| TInst({cl_path=["haxe";"ds"],("ObjectMap" | "EnumValueMap")},[tk;tv]) -> tk,tv,true
-			| _ -> spawn_monomorph ctx p,spawn_monomorph ctx p,false
+			| TAbstract({a_path=["haxe";"ds"],"Map"},[tk;tv]) -> Some (tk,tv)
+			| TInst({cl_path=["haxe";"ds"],"IntMap"},[tv]) -> Some (ctx.t.tint,tv)
+			| TInst({cl_path=["haxe";"ds"],"StringMap"},[tv]) -> Some (ctx.t.tstring,tv)
+			| TInst({cl_path=["haxe";"ds"],("ObjectMap" | "EnumValueMap")},[tk;tv]) -> Some (tk,tv)
+			| _ -> None
 		in
 		match with_type with
 		| WithType.WithType(t,_) -> get_map_params t
-		| _ -> (spawn_monomorph ctx p,spawn_monomorph ctx p,false)
+		| _ -> None
 	in
 	let keys = Hashtbl.create 0 in
 	let check_key e_key =
@@ -1165,31 +1165,37 @@ and type_map_declaration ctx e1 el with_type p =
 	let el_kv = List.map (fun e -> match fst e with
 		| EBinop(OpArrow,e1,e2) -> e1,e2
 		| EDisplay _ ->
-			ignore(type_expr ctx e (WithType.with_type tkey));
+			let tkey = match expected_kv with
+				| Some(tkey,_) -> WithType.with_type tkey
+				| None -> WithType.value
+			in
+			ignore(type_expr ctx e tkey);
 			raise_typing_error "Expected a => b" (pos e)
-		| _ -> raise_typing_error "Expected a => b" (pos e)
+		| _ ->
+			raise_typing_error "Expected a => b" (pos e)
 	) el in
-	let el_k,el_v,tkey,tval = if has_type then begin
-		let el_k,el_v = List.fold_left (fun (el_k,el_v) (e1,e2) ->
-			let e1 = type_expr ctx e1 (WithType.with_type tkey) in
-			check_key e1;
-			let e1 = AbstractCast.cast_or_unify ctx tkey e1 e1.epos in
-			let e2 = type_expr ctx e2 (WithType.with_type tval) in
-			let e2 = AbstractCast.cast_or_unify ctx tval e2 e2.epos in
-			(e1 :: el_k,e2 :: el_v)
-		) ([],[]) el_kv in
-		el_k,el_v,tkey,tval
-	end else begin
-		let el_k,el_v = List.fold_left (fun (el_k,el_v) (e1,e2) ->
-			let e1 = type_expr ctx e1 WithType.value in
-			check_key e1;
-			let e2 = type_expr ctx e2 WithType.value in
-			(e1 :: el_k,e2 :: el_v)
-		) ([],[]) el_kv in
-		let tkey = unify_min_raise ctx el_k in
-		let tval = unify_min_raise ctx el_v in
-		el_k,el_v,tkey,tval
-	end in
+	let el_k,el_v,tkey,tval = match expected_kv with
+		| Some(tkey,tval) ->
+			let el_k,el_v = List.fold_left (fun (el_k,el_v) (e1,e2) ->
+				let e1 = type_expr ctx e1 (WithType.with_type tkey) in
+				check_key e1;
+				let e1 = AbstractCast.cast_or_unify ctx tkey e1 e1.epos in
+				let e2 = type_expr ctx e2 (WithType.with_type tval) in
+				let e2 = AbstractCast.cast_or_unify ctx tval e2 e2.epos in
+				(e1 :: el_k,e2 :: el_v)
+			) ([],[]) el_kv in
+			el_k,el_v,tkey,tval
+		| None ->
+			let el_k,el_v = List.fold_left (fun (el_k,el_v) (e1,e2) ->
+				let e1 = type_expr ctx e1 WithType.value in
+				check_key e1;
+				let e2 = type_expr ctx e2 WithType.value in
+				(e1 :: el_k,e2 :: el_v)
+			) ([],[]) el_kv in
+			let tkey = unify_min_raise ctx el_k in
+			let tval = unify_min_raise ctx el_v in
+			el_k,el_v,tkey,tval
+	in
 	let m = TypeloadModule.load_module ctx (["haxe";"ds"],"Map") null_pos in
 	let a,c = match m.m_types with
 		| (TAbstractDecl ({a_impl = Some c} as a)) :: _ -> a,c
