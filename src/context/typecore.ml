@@ -141,7 +141,7 @@ and typer_expr = {
 	in_function : bool;
 	mutable ret : t;
 	mutable opened : anon_status ref list;
-	mutable monomorphs : monomorphs;
+	mutable monomorphs : (tmono * pos) list;
 	mutable in_loop : bool;
 	mutable bypass_accessor : int;
 	mutable with_type_stack : WithType.t list;
@@ -175,10 +175,6 @@ and typer = {
 	mutable allow_transform : bool;
 	(* events *)
 	memory_marker : float array;
-}
-
-and monomorphs = {
-	mutable perfunction : (tmono * pos) list;
 }
 
 let pass_name = function
@@ -241,9 +237,7 @@ module TyperManager = struct
 			in_function;
 			ret = t_dynamic;
 			opened = [];
-			monomorphs = {
-				perfunction = [];
-			};
+			monomorphs = [];
 			in_loop = false;
 			bypass_accessor = 0;
 			with_type_stack = [];
@@ -374,7 +368,7 @@ let unify_min_for_type_source ctx el src = (!unify_min_for_type_source_ref) ctx 
 
 let spawn_monomorph' ctx p =
 	let mono = Monomorph.create () in
-	ctx.e.monomorphs.perfunction <- (mono,p) :: ctx.e.monomorphs.perfunction;
+	ctx.e.monomorphs <- (mono,p) :: ctx.e.monomorphs;
 	mono
 
 let spawn_monomorph ctx p =
