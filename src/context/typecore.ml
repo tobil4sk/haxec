@@ -278,6 +278,18 @@ module TyperManager = struct
 
 	let clone_for_expr ctx curfun in_function =
 		let e = create_ctx_e curfun in_function in
+		begin match curfun with
+		| FunMember | FunMemberAbstract | FunStatic | FunConstructor ->
+			(* Monomorphs from field arguments and return types are created before
+			   ctx.e is cloned, so they have to be absorbed here. A better fix might
+			   be to clone ctx.e earlier, but that comes with its own challenges. *)
+			e.monomorphs <- ctx.e.monomorphs;
+			ctx.e.monomorphs <- []
+		| FunMemberAbstractLocal | FunMemberClassLocal ->
+			(* We don't need to do this for local functions because the cloning happens
+			   earlier there. *)
+			()
+		end;
 		create ctx ctx.m ctx.c ctx.f e PTypeField ctx.type_params
 
 	let clone_for_type_params ctx params =
