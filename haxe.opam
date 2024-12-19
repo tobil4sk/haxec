@@ -30,6 +30,7 @@ depends: [
   "ppx_parser" {>= "0.2.0"}
   "conf-libpcre2-8"
   "conf-zlib"
+  "conf-mbedtls"
   "conf-neko"
   "luv" {>= "0.5.13"}
   "ipaddr"
