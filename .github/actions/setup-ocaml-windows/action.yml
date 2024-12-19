@@ -8,15 +8,7 @@ runs:
       ocaml-compiler: ${{ env.OCAML_VERSION }}
       opam-local-packages: |
         haxe.opam
-
-  - name: Install dependencies
-    shell: pwsh
-    env:
-      MBEDTLS_VERSION: 3.6.5
-    run: |
-      curl.exe -fsSL -o "libmbedtls.tar.xz" --retry 3 `
-        https://github.com/Simn/mingw64-mbedtls/releases/download/${{ env.MBEDTLS_VERSION }}/mingw64-${{ env.MINGW_ARCH }}-mbedtls-${{ env.MBEDTLS_VERSION }}-1-noarch.tar.xz
-      ${{ env.CYG_ROOT }}\bin\tar.exe -C ${{ env.CYG_ROOT }} -xvf libmbedtls.tar.xz
+      windows-environment: msys2
 
   - name: Install OCaml libraries
     uses: nick-fields/retry@v3
@@ -31,7 +23,7 @@ runs:
         $PSNativeCommandUseErrorActionPreference = $true
         $ErrorActionPreference = 'Stop'
         # see: https://github.com/aantron/luv/issues/162
-        $env:PATH="${env:CYG_ROOT}\bin;${env:CYG_ROOT}\usr\x86_64-w64-mingw32\bin;${env:PATH}"
+        # $env:PATH="${env:CYG_ROOT}\bin;${env:CYG_ROOT}\usr\x86_64-w64-mingw32\bin;${env:PATH}"
         opam install haxe --deps-only
         opam list
     env:
