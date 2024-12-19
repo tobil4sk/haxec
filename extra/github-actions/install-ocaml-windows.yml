@@ -5,6 +5,9 @@
     opam-local-packages: |
       haxe.opam
     windows-environment: msys2
+    opam-repositories: |
+      default: https://github.com/tobil4sk/opam-repository.git#conf-mbedtls
+
 
 # - name: Install dependencies
 #   shell: pwsh
