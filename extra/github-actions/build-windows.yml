@@ -10,6 +10,7 @@
     # stop after any command returns an error
     $PSNativeCommandUseErrorActionPreference = $true
     $ErrorActionPreference = 'Stop'
+    $env:PATH="C:\msys64\mingw64\bin;${env:PATH}"
     opam exec -- make -s -f Makefile.win -j"$env:NUMBER_OF_PROCESSORS" haxe
     opam exec -- make -s -f Makefile.win haxelib
     opam exec -- make -f Makefile.win echo_package_files package_bin package_installer_win package_choco
