@@ -46,7 +46,7 @@ jobs:
         run: neko -version 2>&1
 
       - name: Setup ocaml
-        uses: ocaml/setup-ocaml@v3
+        uses: ocaml/setup-ocaml@v3.1.5
         with:
           ocaml-compiler: 4
           opam-local-packages: |
@@ -65,6 +65,9 @@ jobs:
         shell: pwsh
         run: |
           Set-PSDebug -Trace 1
+          # stop after any command returns an error
+          $PSNativeCommandUseErrorActionPreference = $true
+          $ErrorActionPreference = 'Stop'
           # see: https://github.com/aantron/luv/issues/162
           $env:PATH="${env:CYG_ROOT}\bin;${env:CYG_ROOT}\usr\x86_64-w64-mingw32\bin;${env:PATH}"
           opam install haxe --deps-only
