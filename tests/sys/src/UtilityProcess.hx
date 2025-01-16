@@ -157,7 +157,7 @@ class UtilityProcess {
 	}
 
 	public static function main():Void {
-		var args = Sys.args();
+		var args = Sys.args() #if cppia .slice(1) #end;
 		function sequenceIndex(d:String, mode:String):String
 			return switch UnicodeSequences.valid[Std.parseInt(d)] {
 				case Only(ref): UnicodeSequences.codepointsToString(ref);

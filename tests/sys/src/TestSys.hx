@@ -107,14 +107,10 @@ class TestSys extends TestCommandBase {
 			Assert.isTrue(StringTools.endsWith(p, "sys.n"));
 		#elseif cpp
 			#if cppia
-				Assert.isTrue(StringTools.endsWith(p, "Main.cppia"));
+				// Assert.isTrue(StringTools.endsWith(p, "Main.cppia"));
+				Assert.isTrue(StringTools.endsWith(p, "Host-debug" + (Sys.systemName() == "Windows" ? ".exe" : "")));
 			#else
-				switch (Sys.systemName()) {
-					case "Windows":
-						Assert.isTrue(StringTools.endsWith(p, "Main-debug.exe"));
-					case _:
-						Assert.isTrue(StringTools.endsWith(p, "Main-debug"));
-				}
+				Assert.isTrue(StringTools.endsWith(p, "Main-debug" + (Sys.systemName() == "Windows" ? ".exe" : "")));
 			#end
 		#elseif jvm
 			Assert.isTrue(StringTools.endsWith(p, "sys.jar"));
