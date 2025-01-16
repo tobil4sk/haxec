@@ -106,12 +106,16 @@ class TestSys extends TestCommandBase {
 		#elseif neko
 			Assert.isTrue(StringTools.endsWith(p, "sys.n"));
 		#elseif cpp
-			switch (Sys.systemName()) {
-				case "Windows":
-					Assert.isTrue(StringTools.endsWith(p, "Main-debug.exe"));
-				case _:
-					Assert.isTrue(StringTools.endsWith(p, "Main-debug"));
-			}
+			#if cppia
+				Assert.isTrue(StringTools.endsWith(p, "Main.cppia"));
+			#else
+				switch (Sys.systemName()) {
+					case "Windows":
+						Assert.isTrue(StringTools.endsWith(p, "Main-debug.exe"));
+					case _:
+						Assert.isTrue(StringTools.endsWith(p, "Main-debug"));
+				}
+			#end
 		#elseif jvm
 			Assert.isTrue(StringTools.endsWith(p, "sys.jar"));
 		#elseif python
@@ -120,6 +124,8 @@ class TestSys extends TestCommandBase {
 			Assert.isTrue(StringTools.endsWith(p, "index.php"));
 		#elseif lua
 			Assert.isTrue(StringTools.endsWith(p, "sys.lua"));
+		#else
+		#error "unsupported target"
 		#end
 	}
 

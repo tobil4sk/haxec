@@ -9,7 +9,11 @@ import sys.io.Process;
 class UtilityProcess {
 	public static var BIN_PATH =
 #if cpp
+	#if cppia
+		Path.join(["bin", "cppia"]);
+	#else
 		Path.join(["bin", "cpp"]);
+	#end
 #elseif hl
 	#if hlc
 		Path.join(["bin", "hlc/utilityProcess"]);
@@ -35,7 +39,9 @@ class UtilityProcess {
 #end
 	public static var BIN_NAME =
 #if cpp
-		#if debug
+		#if cppia
+			"UtilityProcess.cppia";
+		#elseif debug
 			"UtilityProcess-debug";
 		#else
 			"UtilityProcess";
@@ -125,6 +131,8 @@ class UtilityProcess {
 		final exitCode =
 		#if (macro || interp)
 		Sys.command("haxe", ["compile-each.hxml", "-p", options.execPath, "--run", options.execName].concat(args));
+		#elseif cppia
+		Sys.command(Sys.getEnv("CPPIA_HOST"), [execFull].concat(args));
 		#elseif cpp
 		Sys.command(execFull, args);
 		#elseif java

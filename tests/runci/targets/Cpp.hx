@@ -7,6 +7,8 @@ import runci.Config.*;
 class Cpp {
 	static public var gotCppDependencies = false;
 	static final miscCppDir = getMiscSubDir('cpp');
+	static final isLinuxArm64 = systemName == 'Linux' && Linux.arch == Arm64;
+	static var cppiaHost:Null<String> = null;
 
 	static public function getCppDependencies() {
 		if (gotCppDependencies) return;
@@ -44,10 +46,15 @@ class Cpp {
 		runCommand(bin, args);
 	}
 
+	static public function runCppia(script:String, ?args:Array<String>):Void {
+		if (args == null) args = [];
+		runCommand(cppiaHost, [script].concat(args));
+		if (!isLinuxArm64) // FIXME
+			runCommand(cppiaHost, ["-jit", script].concat(args));
+	}
+
 	static public function run(args:Array<String>, testCompiled:Bool, testCppia:Bool) {
 		getCppDependencies();
-
-		final isLinuxArm64 = systemName == 'Linux' && Linux.arch == Arm64;
 
 		final archFlag = switch systemName {
 			case 'Windows':
@@ -56,45 +63,61 @@ class Cpp {
 				'HXCPP_LINUX_ARM64';
 			case _:
 				'HXCPP_M64';
-		}
+		};
 
 		if (testCompiled) {
-			runCommand("rm", ["-rf", "cpp"]);
 			runCommand("haxe", ["compile-cpp.hxml", "-D", archFlag].concat(args));
 			runCpp("bin/cpp/TestMain-debug", []);
+
+			changeDirectory(sysDir);
+			runCommand("haxe", ["-D", archFlag, "--each", "compile-cpp.hxml"].concat(args));
+			runSysTest(FileSystem.fullPath("bin/cpp/Main-debug"));
+
+			if (!isLinuxArm64) { // FIXME
+				changeDirectory(threadsDir);
+				runCommand("haxe", ["-D", archFlag, "build.hxml", "-cpp", "bin/cpp"]);
+				runCpp("bin/cpp/Main");
+			}
+
+			changeDirectory(getMiscSubDir("eventLoop"));
+			runCommand("haxe", ["build-cpp.hxml", "-cpp", "bin/cpp"]);
+			// TODO: check output like misc tests do
+			runCpp("bin/cpp/Main");
+
+			if (Sys.systemName() == "Mac") {
+				changeDirectory(getMiscSubDir("cppObjc"));
+				runCommand("haxe", ["-D", archFlag, "build.hxml"]);
+				runCpp("bin/TestObjc-debug");
+			}
+
+			changeDirectory(miscCppDir);
+			runCommand("haxe", ["run.hxml"]);
 		}
 
 		if (testCppia) {
+			changeDirectory(cwd);
 			runCommand("haxe", ["compile-cppia-host.hxml", "-D", archFlag].concat(args));
+			cppiaHost = FileSystem.fullPath("bin/cppia/Host-debug");
+			Sys.putEnv("CPPIA_HOST", cppiaHost);
+
+			changeDirectory(unitDir);
 			runCommand("haxe", ["compile-cppia.hxml"].concat(args));
-			runCpp("bin/cppia/Host-debug", ["bin/unit.cppia"]);
+			runCppia("bin/unit.cppia");
 
-			if (!isLinuxArm64) // FIXME
-				runCpp("bin/cppia/Host-debug", ["bin/unit.cppia", "-jit"]);
+			changeDirectory(sysDir);
+			runCommand("haxe", ["compile-cppia.hxml"].concat(args));
+			runCpp(cppiaHost, ["bin/cppia/Main.cppia"]);
+
+			if (!isLinuxArm64) { // FIXME
+				changeDirectory(threadsDir);
+				runCommand("haxe", ["-D", archFlag, "build.hxml", "-cppia", "export/cppia/threads.cppia"]);
+				runCppia("export/cppia/threads.cppia");
+			}
+
+			changeDirectory(getMiscSubDir("eventLoop"));
+			runCommand("haxe", ["build-cpp.hxml", "-cppia", "bin/cppia/Main.cppia"]);
+			// TODO: check output like misc tests do
+			runCppia("bin/cppia/Main.cppia");
 		}
-
-		changeDirectory(sysDir);
-		runCommand("haxe", ["-D", archFlag, "--each", "compile-cpp.hxml"].concat(args));
-		runSysTest(FileSystem.fullPath("bin/cpp/Main-debug"));
-
-		if (!isLinuxArm64) { // FIXME
-			changeDirectory(threadsDir);
-			runCommand("haxe", ["-D", archFlag, "build.hxml", "-cpp", "export/cpp"]);
-			runCpp("export/cpp/Main");
-		}
-
-		changeDirectory(getMiscSubDir("eventLoop"));
-		runCommand("haxe", ["build-cpp.hxml"]);
-		// TODO: check output like misc tests do
-		runCpp("cpp/Main");
-
-		if (Sys.systemName() == "Mac") {
-			changeDirectory(getMiscSubDir("cppObjc"));
-			runCommand("haxe", ["-D", archFlag, "build.hxml"]);
-			runCpp("bin/TestObjc-debug");
-		}
-
-		changeDirectory(miscCppDir);
-		runCommand("haxe", ["run.hxml"]);
 	}
 }
