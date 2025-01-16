@@ -100,7 +100,7 @@ class TestArguments extends utest.Test {
 	#end
 
 	function testArgs() {
-		var args = Sys.args();
+		var args = Sys.args() #if cppia .slice(1) #end;
 		for (i in 0...expectedArgs.length) {
 			Assert.equals(expectedArgs[i], args[i]);
 		}
