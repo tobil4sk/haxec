@@ -101,28 +101,36 @@ class TestSys extends TestCommandBase {
 		Assert.isTrue(haxe.io.Path.isAbsolute(p));
 		Assert.isTrue(sys.FileSystem.exists(p));
 
+		Assert.isTrue(StringTools.endsWith(p,
 		#if interp
-			Assert.isTrue(StringTools.endsWith(p, "Main.hx"));
+			"Main.hx"
 		#elseif neko
-			Assert.isTrue(StringTools.endsWith(p, "sys.n"));
+			 "sys.n"
 		#elseif cpp
 			#if cppia
-				// Assert.isTrue(StringTools.endsWith(p, "Main.cppia"));
-				Assert.isTrue(StringTools.endsWith(p, "Host-debug" + (Sys.systemName() == "Windows" ? ".exe" : "")));
+				// "Main.cppia"
+				"Host-debug" + (Sys.systemName() == "Windows" ? ".exe" : "")
 			#else
-				Assert.isTrue(StringTools.endsWith(p, "Main-debug" + (Sys.systemName() == "Windows" ? ".exe" : "")));
+				"Main-debug" + (Sys.systemName() == "Windows" ? ".exe" : "")
 			#end
 		#elseif jvm
-			Assert.isTrue(StringTools.endsWith(p, "sys.jar"));
+			"sys.jar"
 		#elseif python
-			Assert.isTrue(StringTools.endsWith(p, "sys.py"));
+			"sys.py"
 		#elseif php
-			Assert.isTrue(StringTools.endsWith(p, "index.php"));
+			"index.php"
 		#elseif lua
-			Assert.isTrue(StringTools.endsWith(p, "sys.lua"));
-		#else
-		#error "unsupported target"
+			"sys.lua"
+		#elseif js
+			"sys.js"
+		#elseif hl
+			#if hlc
+				"sys.exe"
+			#else
+				"sys.hl"
+			#end
 		#end
+		));
 	}
 
 	function testGetCwd() {
