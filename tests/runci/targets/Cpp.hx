@@ -46,11 +46,12 @@ class Cpp {
 		runCommand(bin, args);
 	}
 
-	static public function runCppia(script:String, ?args:Array<String>):Void {
+	static public function runCppia(script:String, ?args:Array<String>, ?run):Void {
 		if (args == null) args = [];
-		runCommand(cppiaHost, [script].concat(args));
+		if (run == null) run = runCommand;
+		run(cppiaHost, [script].concat(args));
 		if (!isLinuxArm64) // FIXME
-			runCommand(cppiaHost, ["-jit", script].concat(args));
+			run(cppiaHost, ["-jit", script].concat(args));
 	}
 
 	static public function run(args:Array<String>, testCompiled:Bool, testCppia:Bool) {
@@ -106,7 +107,7 @@ class Cpp {
 
 			changeDirectory(sysDir);
 			runCommand("haxe", ["compile-cppia.hxml"].concat(args));
-			runCpp(cppiaHost, ["bin/cppia/Main.cppia"]);
+			runCppia("bin/cppia/Main.cppia", runSysTest);
 
 			if (!isLinuxArm64) { // FIXME
 				changeDirectory(threadsDir);
