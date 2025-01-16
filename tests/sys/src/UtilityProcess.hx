@@ -82,6 +82,8 @@ class UtilityProcess {
 		var proc =
 		#if (macro || interp)
 		new Process("haxe", ["compile-each.hxml", "-p", options.execPath, "--run", options.execName].concat(args));
+		#elseif cppia
+		new Process(Sys.getEnv("CPPIA_HOST"), [execFull].concat(args));
 		#elseif cpp
 		new Process(execFull, args);
 		#elseif java
