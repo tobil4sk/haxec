@@ -101,6 +101,7 @@ class TestSys extends TestCommandBase {
 		Assert.isTrue(haxe.io.Path.isAbsolute(p));
 		Assert.isTrue(sys.FileSystem.exists(p));
 
+		trace(p);
 		Assert.isTrue(StringTools.endsWith(p,
 		#if interp
 			"Main.hx"
