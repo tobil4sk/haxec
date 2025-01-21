@@ -1,5 +1,7 @@
 import sys.io.File;
 
+using StringTools;
+
 class Main {
 	#if macro
 	public static function init() {
@@ -30,16 +32,19 @@ class Main {
 		var _:foo.bar.DefinedType = {};
 
 		var lines = File.getContent("dump/eval/dependencies.dump").split("\n");
-		lines = lines.map(l -> StringTools.replace(l, "\\", "/"));
+		lines = lines.map(l -> l.trim().replace("\\", "/"));
 		inline function check(module:String) {
-			var line = Lambda.filter(lines, l -> StringTools.endsWith(l, module)).shift();
+			var matches = Lambda.filter(lines, l -> l.contains(module));
 
-			if (line == null)
+			if (matches.length == 0)
 				throw 'Cannot find $module in dependency dump';
 
-			if (!StringTools.endsWith(line, 'tests/misc/projects/Issue11852/$module')) {
-				trace(module, line);
-				throw 'Incorrect path generated for $module';
+			for (line in matches) {
+				if (line.endsWith(":")) line = line.substr(0, line.length - 1);
+				if (!line.endsWith('tests/misc/projects/Issue11852/$module')) {
+					trace(module, line);
+					throw 'Incorrect path generated for $module';
+				}
 			}
 		}
 
