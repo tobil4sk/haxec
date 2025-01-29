@@ -16,9 +16,9 @@ The Haxe compiler is written in OCaml, so you have to set up an OCaml developmen
 
 The Haxe compiler requires OCaml version 4.02 or higher. Since some of the OCaml libraries Haxe depends on were uploaded in the OPAM 2 format, you should use OPAM 2.x instead of OPAM 1.x.
 
-To install OPAM on Unix (e.g. Mac, Linux) systems, follow the [instruction given by OPAM](https://opam.ocaml.org/doc/Install.html). On Windows, we recommend using the [Cygwin/MinGW-based OPAM environment provided by fdopen](https://fdopen.github.io/opam-repository-mingw/installation/), choose the 64-bit versions of everything, also make sure to [use the OPAM 2 version](https://github.com/fdopen/opam-repository-mingw/issues/48).
+To install OPAM, follow the [instruction given by OPAM](https://opam.ocaml.org/doc/Install.html).
 
-In case you messed up the OPAM installation, you can uninstall OPAM and remove `~/.opam`, which contains the OCaml switches (OCaml compilers and libraries), and start over.
+In case you messed up the OPAM installation, you can uninstall OPAM and remove `~/.opam` (or `%LOCALAPPDATA%\opam` on Windows), which contains the OCaml switches (OCaml compilers and libraries), and start over.
 
 Also note that since OPAM 2 on Linux will try to use bubblewrap, which uses Linux user namespaces, which might not be available on environments like Docker or Windows Subsystem for Linux (WSL). In case of encountering related errors, use `--disable-sandboxing` during `opam init`.
 
@@ -40,7 +40,7 @@ To install the native libraries, use the appropriate system package manager.
  * Debian / Ubuntu
     * `sudo apt install libpcre2-dev zlib1g-dev libmbedtls-dev`.
  * Windows (Cygwin)
-    * Run the Cygwin [setup-x86_64.exe](https://cygwin.com/install.html) against the Cygwin installation directory. Install `make`, `git`, `zlib-devel`, `libpcre2-devel`, `mingw64-x86_64-gcc-core`, `mingw64-x86_64-zlib`, and `mingw64-x86_64-pcre2`. You may need to select "Not Installed" in the dropdown list to see the packages.
+    * Run `opam init` to ensure cygwin is configured with the base packages required. Additional cygwin packages will be installed during the `opam install` further below.
     * Install Neko by either
       * Download the [Neko binaries](https://nekovm.org/download/), and add the extracted directory to the beginning of PATH.
       * Install the [Chocolatey Neko package](https://chocolatey.org/packages/neko).
