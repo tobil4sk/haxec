@@ -47,7 +47,7 @@ endif
 ADD_REVISION?=0
 
 BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
-COMMIT_SHA=$(shell git rev-parse --short HEAD)
+COMMIT_SHA=ac67150d86a8099d3fe77639310d254de36faf9f
 COMMIT_DATE=$(shell \
 	if [ "$$(uname)" = "Darwin" ]; then \
 		date -u -r $$(git show -s --format=%ct HEAD) +%Y%m%d%H%M%S; \
@@ -90,9 +90,6 @@ kill_exe_win:
 ifdef SYSTEMROOT
 	-@taskkill /F /IM haxe.exe 2>/dev/null
 endif
-
-# Only use if you have only changed gencpp.ml
-quickcpp: build_src build_pass_4 copy_haxetoolkit
 
 CPP_OS := $(shell uname)
 ifeq ($(CPP_OS),Linux)
