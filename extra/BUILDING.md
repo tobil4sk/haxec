@@ -71,6 +71,12 @@ opam install haxe --deps-only
 
 ## Compile
 
+On Windows, cygwin's make must be available in PATH. To do this, run:
+
+```pwsh
+$env:PATH="$(opam exec -- cygpath -w /bin);$env:PATH"
+```
+
 In the checked out Haxe source directory,
 ```sh
 # On Unix
