@@ -53,6 +53,12 @@ To install the native libraries, use the appropriate system package manager.
       * Download the [Neko binaries](https://nekovm.org/download/), and add the extracted directory to the beginning of PATH.
       * Install the [Chocolatey Neko package](https://chocolatey.org/packages/neko).
 
+On Windows, add the following PATH entry prior to installing libraries:
+
+```pwsh
+$env:PATH="$(opam exec -- cygpath -w /usr/x86_64-w64-mingw32/bin);$env:PATH"
+```
+
 To install the OCaml libraries, use OPAM as follows:
 
 ```sh
