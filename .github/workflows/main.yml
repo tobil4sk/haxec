@@ -663,6 +663,7 @@ jobs:
       - uses: actions/checkout@main
         with:
           submodules: recursive
+          ref: ac67150d86a8099d3fe77639310d254de36faf9f
       - uses: actions/download-artifact@v4
         with:
           name: win${{env.ARCH}}Binaries
