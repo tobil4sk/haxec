@@ -26,12 +26,13 @@ Also note that since OPAM 2 on Linux will try to use bubblewrap, which uses Linu
 
 You need to install some native libraries as well as some OCaml libraries.
 
- * Native libraries
-    * PCRE
-    * zlib
-    * Neko (for building haxelib)
- * OCaml libraries
-    * listed in the `opam` file at the repository root
+* Native libraries
+  * PCRE
+  * zlib
+  * mbedtls
+  * Neko (for building haxelib)
+* OCaml libraries
+  * listed in the `opam` file at the repository root
 
 To install the native libraries, use the appropriate system package manager.
 
@@ -41,6 +42,13 @@ To install the native libraries, use the appropriate system package manager.
     * `sudo apt install libpcre2-dev zlib1g-dev libmbedtls-dev`.
  * Windows (Cygwin)
     * Run `opam init` to ensure cygwin is configured with the base packages required. Additional cygwin packages will be installed during the `opam install` further below.
+
+    * Manually install [mingw64-mbedtls](https://github.com/Simn/mingw64-mbedtls) into the cygwin root. First download the correct package from [the releases tab](https://github.com/Simn/mingw64-mbedtls/releases/latest), and then run:
+
+      ```pwsh
+      & $(opam exec -- cygpath -w "/bin/tar") -C / -xvf path/to/package.tar.xz
+      ```
+
     * Install Neko by either
       * Download the [Neko binaries](https://nekovm.org/download/), and add the extracted directory to the beginning of PATH.
       * Install the [Chocolatey Neko package](https://chocolatey.org/packages/neko).
