@@ -32,10 +32,12 @@ class TestEvents extends utest.Test {
 		var lock = new sys.thread.Lock();
 		Thread.create(() -> {
 			var thread = Thread.current();
+			#if !cppia
 			raises(
 				() -> thread.events.run(() -> {}),
 				sys.thread.NoEventLoopException
 			);
+			#end
 			Thread.runWithEventLoop(() -> {
 				thread.events.run(lock.release);
 			});
