@@ -161,6 +161,12 @@
 		"platforms": ["cpp"]
 	},
 	{
+		"name": "CppUnscriptable",
+		"metadata": ":cpp.unscriptable",
+		"doc": "Disables scriptable support for a type.",
+		"platforms": ["cpp"]
+	},
+	{
 		"name": "Dce",
 		"metadata": ":dce",
 		"doc": "Forces dead code elimination even when `--dce full` is not specified.",

@@ -1514,7 +1514,7 @@ let native_field_name_remap field =
     keyword_remap field.cf_name
 
 let rec tcpp_class_from_tclass ctx ids slots class_def class_params =
-  let scriptable = Gctx.defined ctx.ctx_common Define.Scriptable in
+  let scriptable = Gctx.defined ctx.ctx_common Define.Scriptable && not (has_meta Meta.CppUnscriptable class_def.cl_meta) in
 
   let create_function field func = {
     tcf_field = field;
@@ -1752,7 +1752,7 @@ let rec tcpp_class_from_tclass ctx ids slots class_def class_params =
 
 and tcpp_interface_from_tclass ctx slots class_def =
 
-  let scriptable = Gctx.defined ctx.ctx_common Define.Scriptable && not class_def.cl_private in
+  let scriptable = Gctx.defined ctx.ctx_common Define.Scriptable && not class_def.cl_private && not (has_meta Meta.CppUnscriptable class_def.cl_meta) in
 
   let function_filter (slots, fields) field =
     match (field.cf_type, field.cf_kind) with
