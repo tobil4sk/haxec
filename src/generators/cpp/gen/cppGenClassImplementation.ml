@@ -858,7 +858,7 @@ let generate_managed_class base_ctx tcpp_class =
             List.fold_left
               (fun (signature, sep, size) (_, opt, t) ->
                 output_cpp
-                  (sep ^ "ctx->get" ^ CppCppia.script_type t opt ^ "(" ^ size
+                  (sep ^ CppCppia.script_type_cast t opt ^ "ctx->get" ^ CppCppia.script_type t opt ^ "(" ^ size
                   ^ ")");
                 ( signature ^ CppCppia.script_signature t opt,
                   ",",

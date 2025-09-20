@@ -453,8 +453,10 @@ let rec class_string klass suffix params remap =
    |  (["cpp"],"Pointer")
    |  (["cpp"],"ConstPointer") ->
         "::cpp::Pointer< " ^ (String.concat "," (List.map type_string params) ) ^ " >"
+   |  (["cpp"],"Star")
    |  (["cpp"],"RawPointer") ->
         " " ^ (String.concat "," (List.map type_string params) ) ^ " * "
+   |  (["cpp"],"ConstStar")
    |  (["cpp"],"RawConstPointer") ->
         " const " ^ (String.concat "," (List.map type_string params) ) ^ " * "
    |  (["cpp"],"Function") ->
@@ -541,10 +543,12 @@ and type_string_suff suffix haxe_type remap =
          (match params with
          | [t] -> "::cpp::Pointer< " ^ (type_string (follow t) ) ^ " >"
          | _ -> die "" __LOC__)
+      | ["cpp"], "Star"
       | ["cpp"] , "RawPointer" ->
          (match params with
          | [t] -> " " ^ (type_string (follow t) ) ^ " *"
          | _ -> die "" __LOC__)
+      | ["cpp"], "ConstStar"
       | ["cpp"] , "RawConstPointer" ->
          (match params with
          | [t] -> "const " ^ (type_string (follow t) ) ^ " *"
@@ -574,6 +578,15 @@ and type_string_remap remap haxe_type =
 
 and type_string haxe_type =
    type_string_suff "" haxe_type true
+
+and is_raw_pointer_inst haxe_type =
+   match haxe_type with
+   | TInst ({cl_path = (["cpp"], "RawPointer")}, _)
+   | TInst ({cl_path = (["cpp"], "RawConstPointer")},_)
+   | TType ({t_path = (["cpp"], "Star")}, _)
+   | TType ({t_path = (["cpp"], "ConstStar")},_) ->
+      true
+   | _ -> false
 
 and cpp_enum_path_of enum =
    let globalNamespace =

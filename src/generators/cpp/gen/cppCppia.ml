@@ -22,7 +22,12 @@ let script_type t optional = if optional then begin
   | "Void" -> "Void"
   | "float" | "::cpp::Float32" | "::cpp::Float64" -> "Float"
   | "::cpp::Int64" | "::cpp::UInt64" -> "Object"
+  | _ when is_raw_pointer_inst t -> "RawPtr"
   | _ -> "Object"
+
+let script_type_cast t optional = if not optional && is_raw_pointer_inst t then
+  "(" ^ type_string t ^ ")"
+  else ""
 
 let script_signature t optional = match script_type t optional with
   | "Bool" -> "b"
@@ -34,7 +39,7 @@ let script_signature t optional = match script_type t optional with
   | _ -> "o"
 
 let script_size_type t optional = match script_type t optional with
-  | "Object" -> "void *"
+  | "Object" | "RawPtr" -> "void *"
   | "Int" -> "int"
   | "Bool" -> "bool"
   | x -> x
