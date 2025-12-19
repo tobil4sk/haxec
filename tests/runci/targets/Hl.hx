@@ -117,6 +117,7 @@ class Hl {
 			"-lhl"
 		].concat(extraCompilerFlags));
 
+		runCommand('file', ['$dir/$filename.exe']);
 		run('$dir/$filename.exe', []);
 
 		// Run with MSBuild
