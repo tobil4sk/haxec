@@ -120,7 +120,7 @@ class Hl {
 
 		runCommand('file', ['$dir/$filename.exe']);
 		if (systemName == "Mac") {
-			runCommand('lldb', ["-ex", "run", "--batch", '$dir/$filename.exe']);
+			runCommand('lldb', ['$dir/$filename.exe', '-o', 'run', '-o', 'bt']);
 		}
 		run('$dir/$filename.exe', []);
 
