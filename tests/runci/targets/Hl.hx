@@ -84,6 +84,7 @@ class Hl {
 		if (withJitTests) {
 			runCommand(hlBinary, ["--version"]);
 		}
+		runCommand('file', ['$hlInstallLibDir/ssl.hdll']);
 
 		haxelibDev("hashlink", '$hlSrc/other/haxelib/');
 
