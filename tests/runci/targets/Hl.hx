@@ -71,6 +71,7 @@ class Hl {
 			"-DWITH_UV=ON",
 			"-DWITH_VIDEO=OFF",
 			"-DCMAKE_INSTALL_PREFIX=" + hlInstallDir,
+			"-DCMAKE_BUILD_TYPE=Debug",
 			"-B" + hlBuild,
 			"-H" + hlSrc
 		]));
@@ -115,7 +116,8 @@ class Hl {
 			'$hlInstallLibDir/sqlite.hdll',
 			'$hlInstallLibDir/uv.hdll',
 			"-lm",
-			"-lhl"
+			"-lhl",
+			"-g"
 		].concat(extraCompilerFlags));
 
 		runCommand('file', ['$dir/$filename.exe']);
