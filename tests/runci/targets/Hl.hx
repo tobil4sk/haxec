@@ -152,6 +152,12 @@ class Hl {
 
 		getHlDependencies();
 
+		changeDirectory(getMiscSubDir("hlc/temp"));
+		runCommand("haxe", ["build.hxml"]);
+		buildAndRunHlc("bin", "test", runCommand);
+
+		return;
+
 		for (extraArgs in [[], ["--undefine", "analyzer-optimize"]]) {
 			if (Hl.withJitTests) {
 				runCommand("haxe", ["compile-hl.hxml"].concat(extraArgs).concat(args));

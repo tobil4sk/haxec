@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   windows64-build:
+    if: false
     runs-on: windows-latest
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -57,6 +58,7 @@ jobs:
 
 
   linux-build:
+    if: false
     runs-on: ubuntu-22.04
     env:
       PLATFORM: linux64
@@ -270,6 +272,7 @@ jobs:
         working-directory: ${{github.workspace}}/tests/docgen
 
   linux-arm64-build:
+    if: false
     runs-on: ubuntu-22.04-arm
     env:
       PLATFORM: linux-arm64

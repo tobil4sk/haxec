@@ -1,0 +1,12 @@
+-D source-header=
+--debug
+--dce full
+-D analyzer-optimize
+-D analyzer-user-var-fusion
+-D message.reporting=pretty
+-D haxe-next
+
+-main Test
+-hl bin/test.c
+-D hl-check
+-D hl-ver=1.16.0
