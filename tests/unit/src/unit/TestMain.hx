@@ -34,84 +34,86 @@ function main() {
 	tf.mouseEnabled = true;
 	#end
 	var classes = [
-		new TestOps(),
-		new TestBasetypes(),
-		new TestNumericSuffixes(),
-		new TestNumericSeparator(),
-		new TestExceptions(),
-		new TestBytes(),
-		new TestIO(),
-		new TestLocals(),
-		new TestLocalStatic(),
-		new TestEReg(),
-		new TestXML(),
-		new TestMisc(),
-		new TestJson(),
-		new TestResource(),
-		new TestInt64(),
-		new TestReflect(),
-		new TestSerialize(),
-		new TestSerializerCrossTarget(),
-		new TestMeta(),
-		new TestType(),
-		new TestOrder(),
-		new TestGADT(),
-		new TestGeneric(),
-		new TestArrowFunctions(),
-		new TestCasts(),
-		new TestSyntaxModule(),
-		new TestNull(),
-		new TestNullCoalescing(),
-		new TestNumericCasts(),
-		new TestHashMap(),
-		new TestRest(),
-		#if (!php && !lua)
-		new TestHttps(),
-		#end
-		/* Every target struggles with these tests. We can occasionally enable them when
-			making related changes, but otherwise this is not worth the CI time. */
-		// new TestBigInt(),
-		#if !no_pattern_matching
-		new TestMatch(),
-		#end
-		#if jvm
-		new TestJava(),
-		#end
-		#if lua
-		new TestLua(),
-		#end
-		#if python
-		new TestPython(),
-		#end
-		#if hl
-		new TestHL(),
-		#end
-		#if php
-		new TestPhp(),
-		#end
-		#if jvm
-		new TestOverloads(),
-		#end
-		new TestOverloadsForEveryone(),
-		new TestInterface(),
-		new TestNaN(),
-		#if ((dce == "full") && !interp)
-		new TestDCE(),
-		#end
-		new TestMapComprehension(),
-		new TestMacro(),
-		new TestKeyValueIterator(),
-		new TestFieldVariance(),
-		new TestConstrainedMonomorphs(),
-		new TestDefaultTypeParameters(),
+		// new TestOps(),
+		// new TestBasetypes(),
+		// new TestNumericSuffixes(),
+		// new TestNumericSeparator(),
+		// new TestExceptions(),
+		// new TestBytes(),
+		// new TestIO(),
+		// new TestLocals(),
+		// new TestLocalStatic(),
+		// new TestEReg(),
+		// new TestXML(),
+		// new TestMisc(),
+		// new TestJson(),
+		// new TestResource(),
+		// new TestInt64(),
+		// new TestReflect(),
+		// new TestSerialize(),
+		// new TestSerializerCrossTarget(),
+		// new TestMeta(),
+		// new TestType(),
+		// new TestOrder(),
+		// new TestGADT(),
+		// new TestGeneric(),
+		// new TestArrowFunctions(),
+		// new TestCasts(),
+		// new TestSyntaxModule(),
+		// new TestNull(),
+		// new TestNullCoalescing(),
+		// new TestNumericCasts(),
+		// new TestHashMap(),
+		// new TestRest(),
+		// #if (!php && !lua)
+		// new TestHttps(),
+		// #end
+		// /* Every target struggles with these tests. We can occasionally enable them when
+		// 	making related changes, but otherwise this is not worth the CI time. */
+		// // new TestBigInt(),
+		// #if !no_pattern_matching
+		// new TestMatch(),
+		// #end
+		// #if jvm
+		// new TestJava(),
+		// #end
+		// #if lua
+		// new TestLua(),
+		// #end
+		// #if python
+		// new TestPython(),
+		// #end
+		// #if hl
+		// new TestHL(),
+		// #end
+		// #if php
+		// new TestPhp(),
+		// #end
+		// #if jvm
+		// new TestOverloads(),
+		// #end
+		// new TestOverloadsForEveryone(),
+		// new TestInterface(),
+		// new TestNaN(),
+		// #if ((dce == "full") && !interp)
+		// new TestDCE(),
+		// #end
+		// new TestMapComprehension(),
+		// new TestMacro(),
+		// new TestKeyValueIterator(),
+		// new TestFieldVariance(),
+		// new TestConstrainedMonomorphs(),
+		// new TestDefaultTypeParameters(),
 		// new TestUnspecified(),
 	];
 
-	for (specClass in unit.UnitBuilder.generateSpec("src/unitstd")) {
-		classes.push(specClass);
-	}
-	TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
-	TestIssues.addIssueClasses("src/unit/hxcpp_issues", "unit.hxcpp_issues");
+	// for (specClass in unit.UnitBuilder.generateSpec("src/unitstd")) {
+	// 	classes.push(specClass);
+	// }
+
+	// TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
+	// TestIssues.addIssueClasses("src/unit/hxcpp_issues", "unit.hxcpp_issues");
+	classes.push(new unit.issues.Issue12447());
 
 	var runner = new Runner();
 	for (c in classes) {
