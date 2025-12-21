@@ -19,6 +19,9 @@ class FileNames {
 
 		// "aaa...a"
 		[for (i in 0...100) "a"].join(""),
+
+		// unicode
+		"á"
 	]
 	// long file name
 	.concat(switch (Sys.systemName()) {
