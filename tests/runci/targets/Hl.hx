@@ -150,8 +150,8 @@ class Hl {
 		Hl.withJitTests = withJitTests;
 		Hl.withHlcTests = withHlcTests;
 
-		args.push("-D");
-		args.push("UTEST_PRINT_TESTS");
+		// args.push("-D");
+		// args.push("UTEST_PRINT_TESTS");
 
 		getHlDependencies();
 
