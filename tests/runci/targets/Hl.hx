@@ -150,6 +150,9 @@ class Hl {
 		Hl.withJitTests = withJitTests;
 		Hl.withHlcTests = withHlcTests;
 
+		args.push("-D");
+		args.push("UTEST_PRINT_TEST");
+
 		getHlDependencies();
 
 		// changeDirectory(getMiscSubDir("hlc/temp"));
