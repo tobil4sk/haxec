@@ -151,7 +151,7 @@ class Hl {
 		Hl.withHlcTests = withHlcTests;
 
 		args.push("-D");
-		args.push("UTEST_PRINT_TEST");
+		args.push("UTEST_PRINT_TESTS");
 
 		getHlDependencies();
 
