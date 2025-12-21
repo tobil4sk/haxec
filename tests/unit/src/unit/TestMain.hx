@@ -113,7 +113,6 @@ function main() {
 
 	TestIssues.addIssueClasses("src/unit/issues", "unit.issues");
 	TestIssues.addIssueClasses("src/unit/hxcpp_issues", "unit.hxcpp_issues");
-	classes.push(new unit.issues.Issue12447());
 
 	var runner = new Runner();
 	for (c in classes) {
