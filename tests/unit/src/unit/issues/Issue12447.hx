@@ -10,9 +10,7 @@ class Issue12447 extends Test {
 
 	#if !macro
 	function test() {
-		trace("hi");
 		utest.Assert.same([1, 3, 4, 5], foo());
-		trace("hello world");
 	}
 	#end
 }
