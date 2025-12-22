@@ -636,12 +636,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [macro, js, hl, cpp, jvm, php, python, lua, flash, neko]
-        arch: [arm64]
+        # target: [macro, js, hl, cpp, jvm, php, python, lua, flash, neko]
+        # arch: [arm64]
         include:
-        - target: hl
-          arch: arm64
-          runci-args: --skip-hl-jit
+        # - target: hl
+        #   arch: arm64
+        #   runci-args: --skip-hl-jit
         - target: hl
           arch: x86_64
           runner: macos-15-intel

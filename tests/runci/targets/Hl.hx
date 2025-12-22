@@ -150,16 +150,7 @@ class Hl {
 		Hl.withJitTests = withJitTests;
 		Hl.withHlcTests = withHlcTests;
 
-		// args.push("-D");
-		// args.push("UTEST_PRINT_TESTS");
-
 		getHlDependencies();
-
-		// changeDirectory(getMiscSubDir("hlc/temp"));
-		// runCommand("haxe", ["build.hxml"]);
-		// buildAndRunHlc("bin", "test", runCommand);
-
-		// return;
 
 		for (extraArgs in [[], ["--undefine", "analyzer-optimize"]]) {
 			if (Hl.withJitTests) {
