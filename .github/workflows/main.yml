@@ -645,7 +645,7 @@ jobs:
         - target: hl
           arch: x86_64
           runner: macos-15-intel
-          runci-args: --skip-hl-jit
+          # runci-args: --skip-hl-jit
 
     runs-on: ${{ matrix.runner || 'macos-latest' }}
     steps:
