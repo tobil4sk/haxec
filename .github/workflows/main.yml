@@ -161,10 +161,10 @@ jobs:
         include:
           - target: hl
             arch: x86
-            APT_PACKAGES: cmake ninja-build libturbojpeg-dev
+            APT_PACKAGES: cmake ninja-build libturbojpeg-dev gdb
           - target: hl
             arch: arm64
-            APT_PACKAGES: cmake ninja-build libturbojpeg-dev
+            APT_PACKAGES: cmake ninja-build libturbojpeg-dev gdb
             runci-args: --skip-hl-jit
           - target: cpp
             arch: x86
