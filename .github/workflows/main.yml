@@ -348,7 +348,7 @@ jobs:
           - target: lua
             APT_PACKAGES: ncurses-dev
           - target: hl
-            APT_PACKAGES: cmake ninja-build libturbojpeg-dev
+            APT_PACKAGES: cmake ninja-build libturbojpeg-dev gdb
             runci-args: --skip-hl-jit
     steps:
       - uses: actions/checkout@main
