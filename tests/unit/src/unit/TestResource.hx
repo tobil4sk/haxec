@@ -17,16 +17,16 @@ class TestResource extends Test {
 		eq(haxe.Resource.getString("re/s?!%[]))(\"'1.txt"), STR);
 		#if (neko || php || eval)
 		// allow binary strings
-		eq(haxe.Resource.getBytes("re/s?!%[]))(\"'1.bin").sub(0, 9).toString(), haxe.io.Bytes.ofHex("48656c6c6f2c204927").toString());
+		eq(haxe.Resource.getBytes("re/s?!%[]))(\"'1.bin").sub(0, 9).toString(), haxe.io.Bytes.ofHex("48656c6c6f21002049").toString());
 		// updated luautf8.len returns nil for data with invalid sequences
 		#elseif !lua5_4
-		// cut until first \0
-		eq(haxe.Resource.getString("re/s?!%[]))(\"'1.bin").substr(0, 2), "He");
+		// cut at first \0
+		eq(haxe.Resource.getString("re/s?!%[]))(\"'1.bin").substr(0, 6), "Hello!");
 		#end
 		eq(haxe.Resource.getBytes("re/s?!%[]))(\"'1.txt").compare(haxe.io.Bytes.ofString(STR)), 0);
 		var b = haxe.Resource.getBytes("re/s?!%[]))(\"'1.bin");
 		var firsts = [
-			0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x2C, 0x20, 0x49, 0x27, 0x6D, 0x20, 0x61, 0x20, 0x62, 0x69, 0x6E, 0x61
+			0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x21, 0x00, 0x20, 0x49, 0x27, 0x6D, 0x20, 0x61, 0x20, 0x62, 0x69, 0x6E, 0x61
 		];
 		var lasts = [
 			0x65, 0x20, 0x79, 0x6F, 0x75, 0x20, 0x6E, 0x65, 0x78, 0x74, 0x20, 0x74, 0x69, 0x6D, 0x65, 0x21, 0x00, 0x00
