@@ -39,19 +39,4 @@ class TestResource extends Test {
 		eq(haxe.Resource.getString("nope"), null);
 		eq(haxe.Resource.getBytes("nope"), null);
 	}
-
-	#if neko
-	static function main() {
-		var ch = sys.io.File.write("re/s?!%[]))(\"'1.txt", true);
-		ch.writeString(STR);
-		ch.close();
-		var ch = sys.io.File.write("re/s?!%[]))(\"'1.bin", true);
-		ch.writeString("Héllo");
-		ch.writeByte(0);
-		ch.writeString("World");
-		ch.writeInt32(0);
-		ch.writeString("!");
-		ch.close();
-	}
-	#end
 }
