@@ -545,6 +545,8 @@ jobs:
           echo $HAXEPATH >> $env:GITHUB_PATH
           echo "HAXELIB_ROOT=$HAXEPATH\lib" >> $env:GITHUB_ENV
 
+          echo $HAXEPATH
+
       - name: Print Haxe version
         shell: pwsh
         run: haxe -version
