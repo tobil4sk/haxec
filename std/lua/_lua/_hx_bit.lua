@@ -1,4 +1,21 @@
-if _G.bit32 or pcall(require, 'bit32') then
+-- lua 5.3 has native bitwise operators
+local has_native_ops, native_ops = pcall(load, [[
+    return {
+      bnot = function(x) return ~x end,
+      band = function(x, y) return x & y end,
+      bor = function(x, y) return x | y end,
+      bxor = function(x, y) return x ^ y end,
+      lshift = function(x, y) return x << y end,x
+      rshift = function(x, y) return x >> y end,
+      arshift = function(x, y) return x >> y end,
+      mod = function(x, y) return x % y end
+    }
+]])
+
+if has_native_ops and native_ops then
+  _hx_bit_raw = native_ops
+  _hx_bit = setmetatable({}, { __index = _hx_bit_raw })
+elseif _G.bit32 or pcall(require, 'bit32') then
   -- lua 5.2 and 5.3 have bit32 builtin, or it maybe be an external library on 5.1
   _hx_bit_raw = _G.bit32 or require('bit32')
   _hx_bit = setmetatable({}, { __index = _hx_bit_raw })

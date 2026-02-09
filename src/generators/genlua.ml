@@ -1023,10 +1023,15 @@ and gen_expr ?(local=true) ctx e = begin
         spr ctx "not ";
         gen_value ctx e;
     | TUnop (NegBits,unop_flag,e) ->
-        add_feature ctx "use._bitop";
-        spr ctx "_hx_bit.bnot(";
-        gen_value ctx e;
-        spr ctx ")";
+        if ctx.lua_ver < 5.3 then (
+            add_feature ctx "use._bitop";
+		    spr ctx "_hx_bit.bnot(";
+		    gen_value ctx e;
+		    spr ctx ")";
+		) else (
+            spr ctx (Ast.s_unop NegBits);
+		    gen_value ctx e;
+        )
     | TUnop (Spread,Prefix,e) ->
         add_feature ctx "use._hx_table";
         spr ctx "_hx_table.unpack(";
@@ -1572,19 +1577,25 @@ and gen_paren_tbinop ctx e =
         gen_value ctx ee
 
 and gen_bitop ctx op e1 e2 =
-    add_feature ctx "use._bitop";
-    print ctx "_hx_bit.%s(" (match op with
-        | Ast.OpXor  ->  "bxor"
-        | Ast.OpAnd  ->  "band"
-        | Ast.OpShl  ->  "lshift"
-        | Ast.OpShr  ->  "arshift"
-        | Ast.OpUShr ->  "rshift"
-        | Ast.OpOr   ->  "bor"
-        | _ -> "");
-    gen_value ctx e1;
-    spr ctx ",";
-    gen_value ctx e2;
-    spr ctx ")"
+    if ctx.lua_ver < 5.3 then (
+        add_feature ctx "use._bitop";
+        print ctx "_hx_bit.%s(" (match op with
+            | Ast.OpXor  ->  "bxor"
+            | Ast.OpAnd  ->  "band"
+            | Ast.OpShl  ->  "lshift"
+            | Ast.OpShr  ->  "arshift"
+            | Ast.OpUShr ->  "rshift"
+            | Ast.OpOr   ->  "bor"
+            | _ -> "");
+        gen_value ctx e1;
+        spr ctx ",";
+        gen_value ctx e2;
+        spr ctx ")"
+    ) else (
+        gen_value ctx e1;
+        print ctx " %s " (Ast.s_binop op);
+        gen_value ctx e2;
+    )
 
 and gen_return ctx e eo =
     if ctx.in_value <> None then unsupported e.epos;
