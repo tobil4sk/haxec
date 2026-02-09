@@ -14,7 +14,6 @@ local has_native_ops, native_ops = pcall(load, [[
 
 if has_native_ops and native_ops then
   _hx_bit_raw = native_ops
-  _hx_bit = setmetatable({}, { __index = _hx_bit_raw })
 elseif _G.bit32 or pcall(require, 'bit32') then
   -- lua 5.2 and 5.3 have bit32 builtin, or it maybe be an external library on 5.1
   _hx_bit_raw = _G.bit32 or require('bit32')
@@ -30,10 +29,9 @@ elseif _G.bit32 or pcall(require, 'bit32') then
 elseif _G.bit or pcall(require, 'bit') then
   --If we do not have bit32, fallback to 'bit', default on luajit
   _hx_bit_raw = _G.bit or require('bit')
-  _hx_bit = _hx_bit_raw
 else
   _hx_bit_raw = setmetatable({}, {__index = function()
     error("Failed to load bit or bit32")
   end})
-  _hx_bit = _hx_bit_raw
 end
+_hx_bit = _hx_bit or _hx_bit_raw
