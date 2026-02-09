@@ -1,4 +1,4 @@
--- lua 5.3 has native bitwise operators
+-- lua 5.3+ has native bitwise operators
 local has_native_ops, native_ops = pcall(load, [[
     return {
       bnot = function(x) return ~x end,
@@ -15,7 +15,7 @@ local has_native_ops, native_ops = pcall(load, [[
 if has_native_ops and native_ops then
   _hx_bit_raw = native_ops
 elseif _G.bit32 or pcall(require, 'bit32') then
-  -- lua 5.2 and 5.3 have bit32 builtin, or it maybe be an external library on 5.1
+  -- lua 5.2 has bit32 builtin, or it maybe be an external library on 5.1
   _hx_bit_raw = _G.bit32 or require('bit32')
   _hx_bit = setmetatable({}, { __index = _hx_bit_raw })
   -- bit32 operations require manual clamping
@@ -31,7 +31,7 @@ elseif _G.bit or pcall(require, 'bit') then
   _hx_bit_raw = _G.bit or require('bit')
 else
   _hx_bit_raw = setmetatable({}, {__index = function()
-    error("Failed to load bit or bit32")
+    error("Bitwise operations not supported: native operators, bit, and bit32 are all unavailable")
   end})
 end
 _hx_bit = _hx_bit or _hx_bit_raw
