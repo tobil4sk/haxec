@@ -56,7 +56,11 @@ class Lua {
 			infoMsg('hererocks has already been installed.');
 		} else {
 			runCommand("pipx", ["ensurepath"]);
-			runCommand("pipx", ["install", "git+https://github.com/tobil4sk/hererocks.git@fix/luajit-cwd-windows-mingw"]);
+			// runCommand("pipx", ["install", "git+https://github.com/tobil4sk/hererocks.git@fix/luajit-cwd-windows-mingw"]);
+			runCommand("pipx", [
+				"install",
+				"git+https://github.com/luarocks/hererocks.git"
+			]);
 		}
 	}
 
