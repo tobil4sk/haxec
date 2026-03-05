@@ -109,7 +109,7 @@ class Hl {
 			'$hlInstallLibDir/sqlite.hdll',
 			"-lm",
 			"-lhl",
-			"-g"
+			// "-g"
 		].concat(extraCompilerFlags));
 
 		runCommand('file', ['$dir/$filename.exe']);
