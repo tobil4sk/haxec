@@ -233,6 +233,13 @@ jobs:
           name: unit-test-binary-${{ matrix.arch }}
           path: tests/unit/bin/hlc/unit.exe
 
+      - name: Upload hl binaries
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hl-binaries-${{ matrix.arch }}
+          path: /home/runner/haxe-ci/downloads/hashlink_build
+
   test-docgen:
     needs: linux-build
     runs-on: ubuntu-22.04
