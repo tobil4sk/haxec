@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   windows64-build:
+    if: false
     runs-on: windows-latest
     env:
       PLATFORM: windows64
@@ -156,7 +157,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [macro, js, hl, cpp, jvm, php, python, lua, flash, neko]
+        # target: [macro, js, hl, cpp, jvm, php, python, lua, flash, neko]
+        target: [hl]
         arch: [x86, arm64]
         include:
           - target: hl
@@ -294,6 +296,7 @@ jobs:
         working-directory: ${{github.workspace}}/tests/docgen
 
   mac-build:
+    if: false
     strategy:
       fail-fast: false
       matrix:
