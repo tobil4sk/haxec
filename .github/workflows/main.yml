@@ -221,24 +221,25 @@ jobs:
         if: matrix.target == 'flash'
         run: export DISPLAY=:99.0
 
+      - name: Setup Core Dumps
+        run: sudo sysctl -w kernel.core_pattern=core.%p.%e
+
       - name: Test
-        run: haxe -D include_legacy --run RunCi ${{ matrix.target }} ${{ matrix.runci-args }}
+        run: |
+          ulimit -c unlimited
+          haxe -D include_legacy --run RunCi ${{ matrix.target }} ${{ matrix.runci-args }}
         working-directory: ${{github.workspace}}/tests
         timeout-minutes: 20
 
-      - name: Upload unit test binary
+      - name: Upload debug artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unit-test-binary-${{ matrix.arch }}
-          path: tests/unit/bin/hlc/unit.exe
-
-      - name: Upload hl binaries
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: hl-binaries-${{ matrix.arch }}
-          path: /home/runner/haxe-ci/downloads/hashlink_build
+          name: hlc-debug-${{ matrix.arch }}
+          path: |
+            tests/unit/bin/hlc/unit.exe
+            tests/unit/core.*
+            /home/runner/haxe-ci/downloads/hashlink_build
 
   test-docgen:
     needs: linux-build
