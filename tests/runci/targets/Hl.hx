@@ -64,7 +64,7 @@ class Hl {
 			"-DWITH_UV=OFF",
 			"-DWITH_VIDEO=OFF",
 			"-DCMAKE_INSTALL_PREFIX=" + hlInstallDir,
-			// "-DCMAKE_BUILD_TYPE=Debug",
+			"-DCMAKE_BUILD_TYPE=Debug",
 			"-B" + hlBuild,
 			"-H" + hlSrc
 		]));
