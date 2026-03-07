@@ -109,12 +109,12 @@ class Hl {
 			'$hlInstallLibDir/sqlite.hdll',
 			"-lm",
 			"-lhl",
-			"-g",
-			"-fsanitize=address"
+			"-g"
 		].concat(extraCompilerFlags));
 
 		runCommand('file', ['$dir/$filename.exe']);
 		// runCommand('gdb', ["-ex", "run", "-ex", "bt", "-q", "--batch", '$dir/$filename.exe']);
+		run('valgrind', ['$dir/$filename.exe']);
 		run('$dir/$filename.exe', []);
 
 		// Run with MSBuild
