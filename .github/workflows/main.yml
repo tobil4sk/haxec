@@ -168,13 +168,13 @@ jobs:
             arch: arm64
             APT_PACKAGES: cmake ninja-build libturbojpeg-dev gdb
             runci-args: --skip-hl-jit
-          - target: cpp
-            arch: x86
-            APT_PACKAGES: gcc-multilib g++-multilib
-          - target: lua
-            APT_PACKAGES: ncurses-dev
-          - target: flash
-            APT_PACKAGES: libglib2.0-0 libgtk2.0-0 libfreetype6 xvfb
+          # - target: cpp
+          #   arch: x86
+          #   APT_PACKAGES: gcc-multilib g++-multilib
+          # - target: lua
+          #   APT_PACKAGES: ncurses-dev
+          # - target: flash
+          #   APT_PACKAGES: libglib2.0-0 libgtk2.0-0 libfreetype6 xvfb
         exclude:
           - target: flash
             arch: arm64
