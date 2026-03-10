@@ -1,6 +1,7 @@
 package io;
 
 import sys.io.Process;
+import utest.Assert;
 
 class TestProcess extends TestCommandBase {
 	override function run(cmd:String, ?args:Array<String>):Int {
@@ -12,5 +13,16 @@ class TestProcess extends TestCommandBase {
 		};
 		p.close();
 		return exitCode;
+	}
+
+	function testNonExistentCodeOutput() {
+		var bin = "totally_nonexistent_command_12345";
+		run(bin);
+		Assert.equals("", runInfo.out);
+		Assert.notEquals("", runInfo.err);
+
+		var exitCode = run(bin, ["-v"]);
+		Assert.equals("", runInfo.out);
+		Assert.notEquals("", runInfo.err);
 	}
 }

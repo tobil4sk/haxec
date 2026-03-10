@@ -145,4 +145,13 @@ class TestCommandBase extends utest.Test {
 		var exitCode = run('$native 1 || $native 0');
 		Assert.equals(0, exitCode);
 	}
+
+	function testNonExistentCode() {
+		var bin = "totally_nonexistent_command_12345";
+		var exitCode = run(bin);
+		Assert.equals(127, exitCode);
+
+		var exitCode = run(bin, ["-v"]);
+		Assert.equals(127, exitCode);
+	}
 }
