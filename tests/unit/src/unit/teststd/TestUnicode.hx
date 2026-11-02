@@ -110,9 +110,9 @@ class TestUnicode extends unit.Test {
 		var rawBytes = haxe.io.Bytes.ofString("éあ😂",RawNative);
 
 		#if (!utf16 || cpp)
-		rawBytes.toHex() == "c3a9e38182f09f9882"; // UTF-8 native
+		eq(rawBytes.toHex(), "c3a9e38182f09f9882"); // UTF-8 native
 		#else
-		rawBytes.toHex() == "e90042303dd802de"; // UTF-16 native
+		eq(rawBytes.toHex(), "e90042303dd802de"); // UTF-16 native
 		#end
 
 		eq(rawBytes.getString(0,rawBytes.length,RawNative), "éあ😂");
