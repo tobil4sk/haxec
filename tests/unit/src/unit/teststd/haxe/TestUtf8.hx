@@ -44,7 +44,7 @@ class TestUtf8 extends unit.Test {
 		eq(haxe.Utf8.compare(haxe.Utf8.sub(str, 1, 0), ""), 0);
 
 		// unspecify outside of range Utf8.sub
-		// haxe.Utf8.compare(haxe.Utf8.sub(str, 9, 0), "") == 0;
+		// eq(haxe.Utf8.compare(haxe.Utf8.sub(str, 9, 0), ""), 0);
 
 		// #if (neko || php || cpp || lua || macro)
 		// TODO neko, cpp, macro

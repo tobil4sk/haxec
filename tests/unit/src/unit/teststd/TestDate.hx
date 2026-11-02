@@ -114,19 +114,19 @@ class TestDate extends unit.Test {
 		var date = Date.fromTime(-2052910800.0);
 		eq(date.getFullYear(), 1904);
 		eq(date.getMonth(), 11);
-		date.getDate() == 12; // could fail on very large UTC offsets
+		eq(date.getDate(), 12); // could fail on very large UTC offsets
 		var date = Date.fromTime(-2587294800.0);
 		eq(date.getFullYear(), 1888);
 		eq(date.getMonth(), 0);
-		date.getDate() == 5; // could fail on very large UTC offsets
+		eq(date.getDate(), 5); // could fail on very large UTC offsets
 		var date = Date.fromTime(2177838000.0);
 		eq(date.getFullYear(), 2039);
 		eq(date.getMonth(), 0);
-		date.getDate() == 5; // could fail on very large UTC offsets
+		eq(date.getDate(), 5); // could fail on very large UTC offsets
 		var date = Date.fromTime(4481434800.0);
 		eq(date.getFullYear(), 2039);
 		eq(date.getMonth(), 0);
-		date.getDate() == 5; // could fail on very large UTC offsets
+		eq(date.getDate(), 5); // could fail on very large UTC offsets
 		*/
 
 		// weekdays

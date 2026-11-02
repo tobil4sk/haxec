@@ -50,7 +50,7 @@ class TestUnicode extends unit.Test {
 		#end
 
 		eq("\u00E9\u3042", "éあ");
-		// "\uD83D\uDE02" == "😂" // gives Invalid Unicode char, that's correct
+		// eq("\uD83D\uDE02", "😂"); // gives Invalid Unicode char, that's correct
 		// maybe later we can add support for \U******** for out of BMP escape sequence
 
 		var s = "é" + "あ";
@@ -119,8 +119,8 @@ class TestUnicode extends unit.Test {
 
 		eq(haxe.crypto.Md5.encode("éあ😂"), "d30b209e81e40d03dd474b26b77a8a18");
 		eq(haxe.crypto.Sha1.encode("éあ😂"), "ec79856a75c98572210430aeb7fe6300b6c4e20c");
-		//haxe.crypto.Sha224.encode("éあ😂") == "d7967c5f27bd6868e276647583c55ab09d5f45b40610a3d9c6d91b90";
-		//haxe.crypto.Sha256.encode("éあ😂") == "d0230b8d8ac2d6d0dbcee11ad0e0eaa68a6565347261871dc241571cab591676";
+		//eq(haxe.crypto.Sha224.encode("éあ😂"), "d7967c5f27bd6868e276647583c55ab09d5f45b40610a3d9c6d91b90");
+		//eq(haxe.crypto.Sha256.encode("éあ😂"), "d0230b8d8ac2d6d0dbcee11ad0e0eaa68a6565347261871dc241571cab591676");
 		eq(haxe.crypto.BaseCode.encode("éあ😂","0123456789abcdef"), "c3a9e38182f09f9882");
 
 		var buf = new haxe.io.BytesBuffer();

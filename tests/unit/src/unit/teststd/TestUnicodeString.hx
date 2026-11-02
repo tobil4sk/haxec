@@ -11,8 +11,8 @@ class TestUnicodeString extends unit.Test {
 		// // toUpperCase, toLowerCase
 		// var turkishLower = "ğüşıiöç";
 		// var turkishUpper = "ĞÜŞIİÖÇ";
-		// turkishUpper == turkishLower.toUpperCase();
-		// turkishLower == turkishUpper.toLowerCase();
+		// eq(turkishUpper, turkishLower.toUpperCase());
+		// eq(turkishLower, turkishUpper.toLowerCase());
 		// charAt
 		eq(s.charAt(0), "𠜎");
 		eq(s.charAt(1), "z");
