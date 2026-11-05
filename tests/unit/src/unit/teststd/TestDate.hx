@@ -111,26 +111,6 @@ class TestDate extends unit.Test {
 		t(date.getTime() > referenceDate.getTime());
 		#end
 
-		/*
-		// fromTime outside the 1970...2038 range (not supported)
-		var date = Date.fromTime(-2052910800.0);
-		eq(date.getFullYear(), 1904);
-		eq(date.getMonth(), 11);
-		eq(date.getDate(), 12); // could fail on very large UTC offsets
-		var date = Date.fromTime(-2587294800.0);
-		eq(date.getFullYear(), 1888);
-		eq(date.getMonth(), 0);
-		eq(date.getDate(), 5); // could fail on very large UTC offsets
-		var date = Date.fromTime(2177838000.0);
-		eq(date.getFullYear(), 2039);
-		eq(date.getMonth(), 0);
-		eq(date.getDate(), 5); // could fail on very large UTC offsets
-		var date = Date.fromTime(4481434800.0);
-		eq(date.getFullYear(), 2039);
-		eq(date.getMonth(), 0);
-		eq(date.getDate(), 5); // could fail on very large UTC offsets
-		*/
-
 		// weekdays
 		eq((new Date(2019, 6, 1, 12, 0, 0)).getDay(), 1);
 		eq((new Date(2019, 6, 2, 12, 0, 0)).getDay(), 2);
