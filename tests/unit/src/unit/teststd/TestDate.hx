@@ -57,6 +57,11 @@ class TestDate extends unit.Test {
 		var date = new Date(1970, 0, 12, 1, 59, 59);
 		t(date.getTime() < referenceDate.getTime());
 
+		#if (cpp || lua || eval)
+		final sysName = Sys.systemName();
+		if (!(sysName == "Windows" || sysName == "Mac"))
+		#end
+		{
 		// < 1970 (negative timestamp)
 		var date = new Date(1904, 11, 12, 1, 4, 1);
 		eq(date.getHours(), 1);
@@ -79,7 +84,10 @@ class TestDate extends unit.Test {
 		eq(date.getDate(), 1);
 		eq(date.getDay(), 0);
 		t(date.getTime() < referenceDate.getTime());
+		#end
+		}
 
+		#if !(neko || (hl && hl_ver < version("2.0.0")))
 		// Y2038 (outside of signed 32-bit integer range)
 		var date = new Date(2039, 0, 1, 1, 59, 59);
 		eq(date.getHours(), 1);
