@@ -166,10 +166,6 @@ class TestDate extends unit.Test {
 		eq(date.getDay(), 6);
 
 		// fromString HH:MM:SS should interpret the time as UTC
-		#if python
-		// disabled on Windows due to https://bugs.python.org/issue37527
-		if (Sys.systemName() != "Windows") {
-		#end
 		var date = Date.fromString("04:05:06");
 		t(date.getUTCHours() == 4);
 		t(date.getUTCMinutes() == 5);
@@ -179,9 +175,6 @@ class TestDate extends unit.Test {
 		t(date.getUTCDate() == 1);
 		t(date.getUTCDay() == 4);
 		t(date.getTime() == 14706000.);
-		#if python
-		}
-		#end
 
 		// timezone offset
 		// see https://en.wikipedia.org/wiki/UTC_offset
