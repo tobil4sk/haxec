@@ -62,6 +62,7 @@ class TestDate extends unit.Test {
 		if (!(sysName == "Windows" || sysName == "Mac"))
 		#end
 		{
+		#if !(hl && hl_ver < version("2.0.0"))
 		// < 1970 (negative timestamp)
 		var date = new Date(1904, 11, 12, 1, 4, 1);
 		eq(date.getHours(), 1);
@@ -72,6 +73,7 @@ class TestDate extends unit.Test {
 		eq(date.getDate(), 12);
 		eq(date.getDay(), 1);
 		t(date.getTime() < referenceDate.getTime());
+		#end
 
 		#if !(neko || (hl && hl_ver < version("2.0.0")))
 		// < 1902 (negative timestamp, outside of signed 32-bit integer range)
